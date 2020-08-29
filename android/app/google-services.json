@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "546088426264",
+    "firebase_url": "https://dima-db81d.firebaseio.com",
+    "project_id": "dima-db81d",
+    "storage_bucket": "dima-db81d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:546088426264:android:0605f2baf6c81cb1eadc6d",
+        "android_client_info": {
+          "package_name": "it.polimi.polimi_reviews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "546088426264-mg1n5r7npvaot5am1pq6lflknb6jukml.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmLWoj-BIi8z5qwyKRMYBh2T-qhhU-au8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "546088426264-mg1n5r7npvaot5am1pq6lflknb6jukml.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
