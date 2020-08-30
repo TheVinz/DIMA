@@ -35,7 +35,7 @@ class FavTile extends StatelessWidget {
                     Text(exam.cfu.toString()),
                     Padding(
                       padding: EdgeInsets.all(5.0),
-                      child: Icon(Icons.delete),
+                      child: Icon(Icons.delete_sweep),
                     )
                   ],
                 ),
@@ -63,7 +63,7 @@ class FavTile extends StatelessWidget {
               onTap: () => model.remove(exam, builder),
               child: Padding(
                 padding: EdgeInsets.all(5.0),
-                child: Icon(Icons.delete),
+                child: Icon(Icons.delete_sweep),
               ),
             )
           ],

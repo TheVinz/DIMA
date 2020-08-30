@@ -70,6 +70,8 @@ class _HomeState extends State<Home> {
             selectedItemColor: Colors.white,
             unselectedItemColor: Colors.grey[400],
             unselectedLabelStyle: TextStyle(fontSize: 10.0),
+            selectedIconTheme: IconThemeData(size: 25.0),
+            unselectedIconTheme: IconThemeData(size: 20.0),
             backgroundColor: AppColors.darkblue,
             currentIndex: _currentTab,
             onTap: (val) => this.setState(() => _currentTab = val),

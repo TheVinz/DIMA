@@ -22,21 +22,19 @@ class FavsModel extends ChangeNotifier {
   GlobalKey<AnimatedListState> get listKey => _listKey;
 
   void add(Exam item) {
-    DatabaseServices(uid: uid).addFavourite(item).then((value) {
-      _items.insert(0, item);
-      _listKey.currentState.insertItem(0);
-      notifyListeners();
-    });
+    _items.insert(0, item);
+    _listKey.currentState.insertItem(0);
+    notifyListeners();
+    DatabaseServices(uid: uid).addFavourite(item);
   }
 
   Future remove(Exam item, AnimatedListRemovedItemBuilder builder) {
     final index = _items.indexOf(item);
-    return DatabaseServices(uid: uid).deleteFavourite(item).then((value) {
-      _listKey.currentState.removeItem(index, builder);
-      Exam e = _items.removeAt(index);
-      assert(e==item);
-      notifyListeners();
-    });
+    _listKey.currentState.removeItem(index, builder, duration: Duration(milliseconds: 300));
+    Exam e = _items.removeAt(index);
+    assert(e==item);
+    notifyListeners();
+    return DatabaseServices(uid: uid).deleteFavourite(item);
 
 
 
