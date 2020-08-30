@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:polimi_reviews/models/school.dart';
 import 'package:polimi_reviews/screens/exam_detail/review_form.dart';
 import 'package:polimi_reviews/screens/exam_detail/review_list.dart';
-import 'package:polimi_reviews/services/database.dart';
+import 'package:polimi_reviews/shared/constants.dart';
 
 class ExamDetail extends StatelessWidget {
 
@@ -14,6 +14,7 @@ class ExamDetail extends StatelessWidget {
     void _showSettingsPanel() {
       showModalBottomSheet(context: context, isScrollControlled: true, builder: (context) {
         return Container(
+          color: Colors.white,
           height: MediaQuery.of(context).size.height * 0.7,
           padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           child: ReviewForm(examPath: exam.path,));
@@ -24,6 +25,7 @@ class ExamDetail extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: _showSettingsPanel,
         child: Icon(Icons.comment),
+        backgroundColor: AppColors.lightblue,
       ),
       body: Padding(
         padding: EdgeInsets.all(5),

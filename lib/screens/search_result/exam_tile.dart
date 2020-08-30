@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:polimi_reviews/models/favs_model.dart';
 import 'package:polimi_reviews/models/school.dart';
 import 'package:polimi_reviews/screens/exam_detail/exam_detail.dart';
+import 'package:polimi_reviews/shared/constants.dart';
 import 'package:polimi_reviews/shared/utils.dart';
 
 class ExamTile extends StatelessWidget {
@@ -19,7 +20,9 @@ class ExamTile extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 1.0, vertical: 4.0),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: exam.numReviews==0 ? Colors.grey : getGradient(exam.score),
+          backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score),
+          child: Image.asset('assets/polimilogo.png',
+            color: Colors.black),
         ),
         title: Text(exam.name),
         subtitle: Text(exam.professor),

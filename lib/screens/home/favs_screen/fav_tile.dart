@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:polimi_reviews/models/favs_model.dart';
 import 'package:polimi_reviews/models/school.dart';
 import 'package:polimi_reviews/screens/exam_detail/exam_detail.dart';
+import 'package:polimi_reviews/shared/constants.dart';
 import 'package:polimi_reviews/shared/utils.dart';
 
 class FavTile extends StatelessWidget {
@@ -25,7 +26,8 @@ class FavTile extends StatelessWidget {
                 title: Text(exam.name),
                 subtitle: Text(exam.professor),
                 leading: CircleAvatar(
-                  backgroundColor: exam.numReviews==0 ? Colors.grey : getGradient(exam.score),
+                  backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score),
+                  child: Image.asset('assets/polimilogo.png', color: Colors.black),
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -50,7 +52,8 @@ class FavTile extends StatelessWidget {
         title: Text(exam.name),
         subtitle: Text(exam.professor),
         leading: CircleAvatar(
-          backgroundColor: exam.numReviews==0 ? Colors.grey : getGradient(exam.score),
+          backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score),
+          child: Image.asset('assets/polimilogo.png', color: Colors.black),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

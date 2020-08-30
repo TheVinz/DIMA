@@ -38,7 +38,9 @@ class _ReviewTileState extends State<ReviewTile> {
               children: [
                 Text(author ?? ''),
                 FlatButton.icon(
-                    onPressed: () => DatabaseServices().deleteReview(widget.review),
+                    onPressed: () {
+                      DatabaseServices().deleteReview(widget.review);
+                      },
                     icon: Icon(Icons.delete),
                     label: Text('delete'))
               ]) : Text(author ?? ''),

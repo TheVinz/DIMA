@@ -4,8 +4,9 @@ import 'package:polimi_reviews/screens/home/search_screen/search_form.dart';
 class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 60.0, horizontal: 40.0),
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
       child: SingleChildScrollView(
         child: SearchForm(),
       ),

@@ -6,7 +6,9 @@ import 'package:polimi_reviews/screens/home/favs_screen/favs_screen.dart';
 import 'package:polimi_reviews/screens/home/search_screen/search_screen.dart';
 import 'package:polimi_reviews/services/auth.dart';
 import 'package:polimi_reviews/services/database.dart';
+import 'package:polimi_reviews/shared/constants.dart';
 import 'package:polimi_reviews/shared/loading.dart';
+import 'package:polimi_reviews/shared/utils.dart';
 import 'package:provider/provider.dart';
 
 class TabIndexes{
@@ -47,37 +49,47 @@ class _HomeState extends State<Home> {
     if(paths == null)
       DatabaseServices(uid:uid).favourites.then((value) => setState(() => paths = value));
 
-    return paths==null? Loading() : WillPopScope(
+    return paths==null? Container(color: Colors.white, child: Loading()) : WillPopScope(
       onWillPop: () async => ! await _navigatorKeys[_currentTab].currentState.maybePop(),
       child: ChangeNotifierProvider<FavsModel>(
         create: (_) => FavsModel(paths, uid:uid),
         child: Scaffold(
-            appBar: AppBar(
-              title: Text('Polimi Reviews'),
-              actions: [
-                FlatButton.icon(onPressed:() => AuthService().signOut(), icon: Icon(Icons.person), label: Text('logout'))
-              ],
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _currentTab,
-              onTap: (val) => this.setState(() => _currentTab = val),
-              items: [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.search),
-                  title: Text('Search')
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.favorite_border),
-                  title: Text('Saved')
-                )
-              ]
-            ),
-            body: Stack(
-              children: [
-                _buildOffstageNavigator(TabIndexes.search, SearchScreen()),
-                _buildOffstageNavigator(TabIndexes.favs, FavsScreen())
-              ],
-            ),
+          appBar: AppBar(
+            elevation: 0.0,
+            leading: Padding(
+                padding: EdgeInsets.all(5.0),
+                child: LogoIcon(color: Colors.white)),
+            title: Text('Polimi Reviews', style: TextStyle(fontSize: 18.0),),
+            actions: [
+              FlatButton.icon(onPressed:() => AuthService().signOut(),
+                  icon: Icon(Icons.person, color: Colors.white,),
+                  label: Text('logout', style: TextStyle(color: Colors.white, fontSize: 10.0),))
+            ],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.grey[400],
+            unselectedLabelStyle: TextStyle(fontSize: 10.0),
+            backgroundColor: AppColors.darkblue,
+            currentIndex: _currentTab,
+            onTap: (val) => this.setState(() => _currentTab = val),
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+                title: Text('Search')
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite_border),
+                title: Text('Saved')
+              )
+            ]
+          ),
+          body: Stack(
+            children: [
+              _buildOffstageNavigator(TabIndexes.search, SearchScreen()),
+              _buildOffstageNavigator(TabIndexes.favs, FavsScreen())
+            ],
+          ),
         ),
       ),
     );

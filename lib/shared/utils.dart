@@ -6,3 +6,22 @@ Color getGradient(double score){
 
   return Color.fromARGB(255, red, green, 0);
 }
+
+class LogoIcon extends StatelessWidget {
+
+  final Color color;
+  LogoIcon({this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 33,
+      width: 99,
+      child: Image.asset(
+        'assets/polimilogo.png',
+        height: 25,
+        color: color,
+      ),
+    );;
+  }
+}

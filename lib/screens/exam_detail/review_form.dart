@@ -47,6 +47,7 @@ class _ReviewFormState extends State<ReviewForm> {
           SizedBox(height: 20.0,),
           Text('How much did you like this exam?', textAlign: TextAlign.left,),
           Slider(
+            label: score.toString(),
             value: score,
             activeColor: getGradient(score),
             inactiveColor: getGradient(score),
@@ -61,7 +62,7 @@ class _ReviewFormState extends State<ReviewForm> {
             child: Loading(),
           ),
           RaisedButton(
-            child: Text("submit"),
+            child: Text("submit", style: TextStyle(color:Colors.white),),
             onPressed: () {
               if(_formKey.currentState.validate()) {
                 setState(() => loading = true);
