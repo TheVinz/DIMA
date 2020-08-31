@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:polimi_reviews/models/filter.dart';
 import 'package:polimi_reviews/models/review.dart';
@@ -67,7 +69,7 @@ class DatabaseServices {
       await Firestore.instance.runTransaction((transaction) async {
         DocumentSnapshot exam = await transaction.get(Firestore.instance.document(examPath));
 
-        double totScore = exam.data['tot_score'] ?? 0;
+        double totScore = exam.data['total_score'] ?? 0;
         int numReviews = exam.data['num_reviews'] ?? 0;
 
         await transaction.update(exam.reference, {
@@ -84,7 +86,7 @@ class DatabaseServices {
         int numReviews = exam.data['num_reviews'] ?? 0;
 
         await transaction.update(exam.reference, {
-          'total_score': totScore + (oldScore - review.score) / numReviews,
+          'total_score': totScore + (review.score-oldScore) / numReviews,
         });
       });
       }
@@ -93,7 +95,7 @@ class DatabaseServices {
               .setData({'comment': review.comment, 'score': review.score});
   }
 
-  List<Review> _reviewsListFromSnapshot(QuerySnapshot snapshot){
+  List<Review> _reviewsListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((doc) => Review(
         userId: doc.documentID,
         comment: doc.data['comment'],
@@ -117,7 +119,7 @@ class DatabaseServices {
       double totScore = snapshot.data['total_score'] ?? 0;
       int numReviews = snapshot.data['num_reviews'] ?? 0;
       await transaction.update(examReference, {
-        'total_score': (totScore*numReviews - review.score)/(numReviews-1),
+        'total_score': numReviews>1 ? (totScore*numReviews - review.score)/(numReviews-1) : 0.0,
         'num_reviews': numReviews-1,
       });
     });
@@ -125,8 +127,8 @@ class DatabaseServices {
     return await Firestore.instance.document(review.path).delete();
   }
 
-  Future getAuthor(Review review){
-    return usersCollection.document(review.userId).get().then((value) => value.data['name']);
+  Future<String> getAuthor(Review review){
+    return usersCollection.document(review.userId).get().then((value) => value.data['name'].toString());
   }
 
   Future addFavourite(Exam exam){
@@ -154,10 +156,27 @@ class DatabaseServices {
           cfu: doc.data['cfu'],
           professor: doc.data['professor'],
           description: doc.data['description'],
-          score: (doc.data['total_score'] ?? 0),
+          score: (doc.data['total_score'] ?? 0.0),
           numReviews: (doc.data['num_reviews'] ?? 0),
         )
     );
+  }
+
+  Stream<Exam> examStream(String path){
+    return Firestore
+        .instance
+        .document(path)
+        .snapshots()
+        .map((doc) =>
+          Exam(
+            name: doc.data['name'],
+            path: doc.reference.path,
+            cfu: doc.data['cfu'],
+            professor: doc.data['professor'],
+            description: doc.data['description'],
+            score: (doc.data['total_score'] ?? 0),
+            numReviews: (doc.data['num_reviews'] ?? 0),
+          ));
   }
 
 }

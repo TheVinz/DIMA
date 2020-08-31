@@ -36,7 +36,7 @@ class ExamTile extends StatelessWidget {
                 padding: EdgeInsets.all(5.0),
                 child: CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  child: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: Colors.red,)
+                  child: Icon(isFav ? Icons.star : Icons.star_border, color: Colors.yellow[800],)
                 )
               ),
             )
@@ -44,7 +44,7 @@ class ExamTile extends StatelessWidget {
         ),
         onTap: () {
           Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ExamDetail(exam: exam,)
+            builder: (context) => ExamDetail(exam: exam, model: model)
           ));
         },
       ),

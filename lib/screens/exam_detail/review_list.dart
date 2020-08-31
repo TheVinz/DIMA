@@ -17,7 +17,7 @@ class ReviewList extends StatelessWidget {
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
           itemCount: snapshot.data.length,
-          itemBuilder: (context, index) => ReviewTile(review: snapshot.data[index]),
+          itemBuilder: (context, index) => ReviewTile(snapshot.data[index],),
         ) : Container(
           child: Text('No review found.')
         );

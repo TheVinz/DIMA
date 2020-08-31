@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:polimi_reviews/models/filter.dart';
+import 'package:polimi_reviews/services/auth.dart';
+import 'package:polimi_reviews/shared/utils.dart';
 
 import 'exam_list.dart';
 
@@ -11,6 +13,24 @@ class SearchResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExamList(filter: filter,);
+    return SafeArea(
+      child: Column(
+        children: [
+          AppBar(
+            elevation: 0.0,
+            leading: Padding(
+                padding: EdgeInsets.all(5.0),
+                child: LogoIcon(color: Colors.white)),
+            title: Text('Search result', style: TextStyle(fontSize: 18.0),),
+            actions: [
+              FlatButton.icon(onPressed:() => AuthService().signOut(),
+                  icon: Icon(Icons.person, color: Colors.white,),
+                  label: Text('logout', style: TextStyle(color: Colors.white, fontSize: 10.0),))
+            ],
+          ),
+          Expanded(child: ExamList(filter: filter,)),
+        ],
+      ),
+    );
   }
 }

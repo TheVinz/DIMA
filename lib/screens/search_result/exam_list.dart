@@ -28,8 +28,8 @@ class _ExamListState extends State<ExamList> {
       stream: DatabaseServices().getExams(this.widget.filter),
       builder: (context, snapshot) {
         return snapshot.hasData ? ListView.builder(
-        itemCount: snapshot.data.length,
-        itemBuilder: (context, index) => ExamTile(exam: snapshot.data[index], model: model,))
+          itemCount: snapshot.data.length,
+          itemBuilder: (context, index) => ExamTile(exam: snapshot.data[index], model: model,))
       : Loading();
       }
     );
