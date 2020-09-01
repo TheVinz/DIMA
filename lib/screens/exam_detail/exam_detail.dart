@@ -43,10 +43,6 @@ class _ExamDetailState extends State<ExamDetail> {
     };
 
     widget.model.addListener(listener);
-
-    DatabaseServices().examStream(exam.path).listen((event) {
-      if(this.mounted) setState(() => exam = event);
-    });
   }
 
   void _toggleFav(){
@@ -109,49 +105,55 @@ class _ExamDetailState extends State<ExamDetail> {
           child: SingleChildScrollView(
             child: Column(
                 children: [
-                  Card(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 0.0, bottom: 40.0, left: 20.0, right: 20.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.end,
+                  StreamBuilder<Exam>(
+                    stream: DatabaseServices().examStream(widget.exam.path),
+                    builder:(context, snapshot) {
+                      final Exam exam = snapshot.hasData ? snapshot.data : widget.exam;
+                      return Card(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 0.0, bottom: 40.0, left: 20.0, right: 20.0),
+                          child: Column(
                             children: [
-                              FlatButton.icon(
-                                icon: Icon(isFav ? Icons.star : Icons.star_border, color: Colors.yellow[800]),
-                                onPressed: _toggleFav,
-                                label: Material(),
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  FlatButton.icon(
+                                    icon: Icon(isFav ? Icons.star : Icons.star_border, color: Colors.yellow[800]),
+                                    onPressed: _toggleFav,
+                                    label: Material(),
+                                  ),
+                                ],
                               ),
+                              Center(
+                                child: CircleAvatar(
+                                  radius: 30.0,
+                                  backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score).withAlpha(100),
+                                  child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Image.asset('assets/polimilogo.png', color: AppColors.grey.withAlpha(150)),
+                                        Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 24.0,
+                                          ),
+                                          textAlign: TextAlign.center,),
+                                      ]
+                                  ),
+                                ),
+                              ),
+                              Divider(height: 20, thickness: 1,),
+                              _Entry(title: "Teaching professor", value: exam.professor),
+                              Divider(height: 20, thickness: 1,),
+                              _Entry(title: "CFU", value: exam.cfu.toString()),
+                              Divider(height: 20, thickness: 2,),
+                              Text(exam.description),
                             ],
                           ),
-                          Center(
-                            child: CircleAvatar(
-                              radius: 30.0,
-                              backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score).withAlpha(100),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Image.asset('assets/polimilogo.png', color: AppColors.grey.withAlpha(150)),
-                                  Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24.0,
-                                    ),
-                                    textAlign: TextAlign.center,),
-                                ]
-                              ),
-                            ),
-                          ),
-                          Divider(height: 20, thickness: 1,),
-                          _Entry(title: "Teaching professor", value: exam.professor),
-                          Divider(height: 20, thickness: 1,),
-                          _Entry(title: "CFU", value: exam.cfu.toString()),
-                          Divider(height: 20, thickness: 2,),
-                          Text(exam.description),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   ),
                   Text('Reviews', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),),
                   ReviewList(examPath: exam.path,),

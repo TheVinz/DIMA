@@ -27,7 +27,7 @@ class ReviewTile extends StatelessWidget {
               children: [
                 Text(review.score.toString()),
                 GestureDetector(
-                  onTap: () => DatabaseServices().deleteReview(review),
+                  onTap: () =>  DatabaseServices().deleteReview(review),
                   child: Icon(Icons.delete),
                 ),
               ],

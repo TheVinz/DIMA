@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:polimi_reviews/models/filter.dart';
 import 'package:polimi_reviews/models/review.dart';
+import 'package:polimi_reviews/models/review_model.dart';
 import 'package:polimi_reviews/models/school.dart';
 
 class DatabaseServices {
@@ -95,20 +96,37 @@ class DatabaseServices {
               .setData({'comment': review.comment, 'score': review.score});
   }
 
-  List<Review> _reviewsListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map((doc) => Review(
+  Review _reviewFromSnapshot(DocumentSnapshot doc) {
+    return Review(
         userId: doc.documentID,
         comment: doc.data['comment'],
         score: doc.data['score'],
         path: doc.reference.path
-    )).toList();
+    );
   }
-  Stream<List<Review>> getReviews(String examPath){
-    return Firestore.instance
+  Future<List<Review>> getReviews(String examPath) {
+    return Firestore.instance.document(examPath)
+        .collection('reviews')
+        .getDocuments()
+        .then((snapshot) => snapshot.documents.map(_reviewFromSnapshot).toList());
+  }
+  void submitReviewsListener(String examPath, ReviewModel model){
+    Firestore.instance
         .document(examPath)
         .collection('reviews')
         .snapshots()
-        .map(_reviewsListFromSnapshot);
+        .forEach((collection) => collection.documentChanges.forEach((element) {
+          switch(element.type){
+            case DocumentChangeType.added:
+              model.add(_reviewFromSnapshot(element.document));
+              break;
+            case DocumentChangeType.removed:
+              model.remove(_reviewFromSnapshot(element.document));
+              break;
+            case DocumentChangeType.modified:
+              model.update(_reviewFromSnapshot(element.document));
+          }
+    }));
   }
   Future deleteReview(Review review) async {
 

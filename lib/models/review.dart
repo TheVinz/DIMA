@@ -5,4 +5,11 @@ class Review{
   final String path;
 
   Review({this.score, this.comment, this.userId, this.path});
+
+  @override
+  bool operator ==(Object other) {
+    if(other.runtimeType != Review) return false;
+    Review o = other;
+    return o.path == this.path;
+  }
 }
