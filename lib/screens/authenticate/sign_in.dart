@@ -19,9 +19,12 @@ class _SignInState extends State<SignIn> {
   String password;
   String error = '';
   bool loading = false;
+  bool obscurePassword = true;
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  final _mailNode = FocusNode();
+  final _passNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +69,14 @@ class _SignInState extends State<SignIn> {
                       children: <Widget>[
                         SizedBox(height: 20.0,),
                         TextFormField(
+                          focusNode: _mailNode,
+                          onFieldSubmitted: (_) {
+                            _mailNode.unfocus();
+                            FocusScope.of(context).requestFocus(_passNode);
+                          },
                           decoration: textInputDecoration.copyWith(hintText: 'Email'),
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.emailAddress,
                           validator: (val) => val.isEmpty ? 'Enter an email' : null,
                           onChanged: (val){
                             setState(() => email = val);
@@ -74,8 +84,20 @@ class _SignInState extends State<SignIn> {
                         ),
                         SizedBox(height: 20.0,),
                         TextFormField(
-                          decoration: textInputDecoration.copyWith(hintText: 'Password'),
-                          obscureText: true,
+                          focusNode: _passNode,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) => _passNode.unfocus(),
+                          decoration: textInputDecoration.copyWith(
+                            hintText: 'Password',
+                            suffixIcon: GestureDetector(
+                              onTap: () => setState(() => obscurePassword = !obscurePassword),
+                              child: Icon(
+                                obscurePassword ? Icons.visibility : Icons.visibility_off,
+                                color: AppColors.lightblue,
+                              ),
+                            )
+                          ),
+                          obscureText: obscurePassword,
                           validator: (val) => val.length<6 ? 'Enter a password 6+ chars long' : null,
                           onChanged: (val){
                             setState(() => password = val);

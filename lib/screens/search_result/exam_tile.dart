@@ -26,21 +26,12 @@ class ExamTile extends StatelessWidget {
         ),
         title: Text(exam.name),
         subtitle: Text(exam.professor),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('${exam.cfu}'),
-            GestureDetector(
-              onTap: () => isFav ? model.remove(exam, (c, a) => Container()) : model.add(exam),
-              child: Padding(
-                padding: EdgeInsets.all(5.0),
-                child: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  child: Icon(isFav ? Icons.star : Icons.star_border, color: Colors.yellow[800],)
-                )
-              ),
-            )
-          ]
+        trailing: GestureDetector(
+          onTap: () => isFav ? model.remove(exam, (c, a) => Container()) : model.add(exam),
+          child: Padding(
+            padding: EdgeInsets.all(5.0),
+            child: Icon(isFav ? Icons.star : Icons.star_border, color: Colors.yellow[800],)
+          ),
         ),
         onTap: () {
           Navigator.push(context, PageRouteBuilder(

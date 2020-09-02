@@ -49,8 +49,9 @@ class DatabaseServices {
   }
   Stream<List<Exam>> getExams(Filter filter){
     return schoolCollection.document(filter.school).collection('degrees')
-        .document(filter.degree).collection('exams')
-        .snapshots().map(_examListFromSnapshot)
+        .document(filter.degree).collection('exams').orderBy('name')
+        .snapshots()
+        .map(_examListFromSnapshot)
         .map((exams) => exams.where((element) =>
                     element.name
                         .toLowerCase()
@@ -98,10 +99,10 @@ class DatabaseServices {
 
   Review _reviewFromSnapshot(DocumentSnapshot doc) {
     return Review(
-        userId: doc.documentID,
-        comment: doc.data['comment'],
-        score: doc.data['score'],
-        path: doc.reference.path
+      userId: doc.documentID,
+      comment: doc.data['comment'],
+      score: doc.data['score'],
+      path: doc.reference.path,
     );
   }
   Future<List<Review>> getReviews(String examPath) {
@@ -145,8 +146,8 @@ class DatabaseServices {
     return await Firestore.instance.document(review.path).delete();
   }
 
-  Future<String> getAuthor(Review review){
-    return usersCollection.document(review.userId).get().then((value) => value.data['name'].toString());
+  Future<String> getUserName(String userId){
+    return usersCollection.document(userId).get().then((value) => value.data['name'].toString());
   }
 
   Future addFavourite(Exam exam){

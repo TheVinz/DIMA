@@ -17,12 +17,16 @@ class _RegisterState extends State<Register> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  final FocusNode _mailFocus = FocusNode();
+  final FocusNode _passFocus = FocusNode();
+  final FocusNode _nameFocus = FocusNode();
 
   String email;
   String password;
   String name;
   String error = '';
   bool loading = false;
+  bool obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +66,13 @@ class _RegisterState extends State<Register> {
                     children: <Widget>[
                       SizedBox(height: 20.0,),
                       TextFormField(
+                        focusNode: _mailFocus,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          _mailFocus.unfocus();
+                          FocusScope.of(context).requestFocus(_nameFocus);
+                        },
                         decoration: textInputDecoration.copyWith(hintText: 'Email'),
                         validator: (val) => val.isEmpty ? 'Insert an email' : null,
                         onChanged: (val){
@@ -70,19 +81,38 @@ class _RegisterState extends State<Register> {
                       ),
                       SizedBox(height: 20.0,),
                       TextFormField(
-                        decoration: textInputDecoration.copyWith(hintText: 'Password'),
-                        obscureText: true,
-                        validator: (val) => val.length<6 ? "Insert a 6+ chars password" : null,
-                        onChanged: (val){
-                          setState(() => password = val);
+                        focusNode: _nameFocus,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          _nameFocus.unfocus();
+                          FocusScope.of(context).requestFocus(_passFocus);
                         },
-                      ),
-                      SizedBox(height: 20.0,),
-                      TextFormField(
                         decoration: textInputDecoration.copyWith(hintText: 'Display name'),
                         validator: (val) => val.length<6 ? "Insert a 6+ chars name" : null,
                         onChanged: (val){
                           setState(() => name = val);
+                        },
+                      ),
+                      SizedBox(height: 20.0,),
+                      TextFormField(
+                        focusNode: _passFocus,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) {
+                          _nameFocus.unfocus();
+                        },
+                        decoration: textInputDecoration.copyWith(
+                          hintText: 'Password',
+                          suffixIcon: GestureDetector(
+                            onTap: () => setState(() => obscurePassword = !obscurePassword),
+                            child: Icon(
+                                obscurePassword ? Icons.visibility : Icons.visibility_off,
+                                color: AppColors.lightblue),
+                          )
+                        ),
+                        obscureText: obscurePassword,
+                        validator: (val) => val.length<6 ? "Insert a 6+ chars password" : null,
+                        onChanged: (val){
+                          setState(() => password = val);
                         },
                       ),
                       SizedBox(height: 20.0,),

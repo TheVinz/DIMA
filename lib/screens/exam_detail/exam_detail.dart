@@ -9,13 +9,31 @@ import 'package:polimi_reviews/shared/constants.dart';
 import 'package:polimi_reviews/shared/utils.dart';
 import 'package:provider/provider.dart';
 
-class ExamDetail extends StatelessWidget {
+class ExamDetail extends StatefulWidget {
 
   final Exam exam;
-  final ReviewList _reviewList;
-  ExamDetail({@required this.exam,}):
-        _reviewList = ReviewList(examPath: exam.path,);
+  ExamDetail({@required this.exam});
 
+  @override
+  _ExamDetailState createState() => _ExamDetailState();
+}
+
+class _ExamDetailState extends State<ExamDetail> {
+
+  Exam exam;
+  ReviewList _reviewList;
+
+  @override
+  void initState() {
+    super.initState();
+    exam = widget.exam;
+
+    _reviewList = ReviewList(examPath: exam.path,);
+
+    DatabaseServices().examStream(exam.path).listen((event) {
+      if(this.mounted) setState(() => exam = event);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,45 +54,58 @@ class ExamDetail extends StatelessWidget {
         child: Icon(Icons.comment),
         backgroundColor: AppColors.lightblue,
       ),
-      body: StreamBuilder<Exam>(
-        stream: DatabaseServices().examStream(exam.path),
-        builder:(context, snapshot) {
-          Exam exam = snapshot.hasData ? snapshot.data : this.exam;
-          return NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  automaticallyImplyLeading: false,
-                  expandedHeight: 200.0,
-                  floating: false,
-                  pinned: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    centerTitle: true,
-                    background: Container(
-                        padding: EdgeInsets.only(top: 25.0, bottom: 5.0),
-                        child: Image.asset('assets/polimilogo.png',
-                          color: (exam.numReviews == 0 ? Colors.black : getGradient(exam.score)).withAlpha(100),
-                        )),
-                    title: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(exam.name,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: innerBoxIsScrolled ? 1 : 5,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              title: innerBoxIsScrolled ?
+                Text(
+                  exam.name,
+                  style: TextStyle(fontSize: 16),
+                  overflow: TextOverflow.fade,
+                ) : null,
+              actions: innerBoxIsScrolled ? [
+                Consumer<FavsModel>(
+                  builder: (_, model, __) => GestureDetector(
+                    child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                        child: Icon(model.items.contains(exam) ? Icons.star : Icons.star_border, color: Colors.yellow[800])),
+                    onTap: () => model.items.contains(exam) ?
+                      model.remove(exam, (context, animation) => Material())
+                      : model.add(exam),
                   ),
                 ),
-
-              ];
-            },
-            body: Padding(
-              padding: EdgeInsets.all(5),
-              child: SingleChildScrollView(
+              ] : [],
+              automaticallyImplyLeading: false,
+              expandedHeight: 200.0,
+              floating: false,
+              pinned: true,
+              centerTitle: true,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                background: Container(
+                    padding: EdgeInsets.only(top: 25.0, bottom: 5.0),
+                    child: Image.asset('assets/polimilogo.png',
+                      color: (exam.numReviews == 0 ? Colors.black : getGradient(exam.score)).withAlpha(100),
+                    )),
+                titlePadding: EdgeInsets.symmetric(horizontal: 20.0),
+                title: !innerBoxIsScrolled ?
+                  Text(exam.name,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      backgroundColor: AppColors.darkblue.withAlpha(200)
+                    ),
+                    textAlign: TextAlign.center,
+                  ) : null,
+              ),
+            ),
+          ];
+        },
+        body: Padding(
+          padding: EdgeInsets.all(5),
+            child:
+              SingleChildScrollView(
                 child: Column(
                     children: [
                       Card(
@@ -82,23 +113,6 @@ class ExamDetail extends StatelessWidget {
                           padding: EdgeInsets.only(top: 0.0, bottom: 40.0, left: 20.0, right: 20.0),
                           child: Column(
                             children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Consumer<FavsModel>(
-                                    builder: (context, model, _) {
-                                      bool isFav = model.items.contains(exam);
-                                      return FlatButton.icon(
-                                        icon: Icon(isFav ? Icons.star : Icons.star_border, color: Colors.yellow[800]),
-                                        onPressed: () =>
-                                          isFav ? model.remove(exam, (context, animation) => Material()) : model.add(exam),
-                                        label: Material(),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
                               Center(
                                 child: CircleAvatar(
                                   radius: 30.0,
@@ -106,8 +120,7 @@ class ExamDetail extends StatelessWidget {
                                   child: Stack(
                                       alignment: Alignment.center,
                                       children: [
-                                        Image.asset('assets/polimilogo.png',
-                                            color: exam.numReviews==0 ? Colors.grey[350] : AppColors.grey.withAlpha(150)),
+                                        Image.asset('assets/polimilogo.png', color: exam.numReviews==0 ? Colors.grey[400] : AppColors.grey.withAlpha(150)),
                                         Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -134,9 +147,7 @@ class ExamDetail extends StatelessWidget {
                     ]
                 ),
               ),
-            ),
-          );
-        },
+        ),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:polimi_reviews/models/school.dart';
 import 'package:polimi_reviews/screens/search_result/search_result.dart';
 import 'package:polimi_reviews/services/database.dart';
 import 'package:polimi_reviews/shared/constants.dart';
+import 'package:polimi_reviews/shared/utils.dart';
 
 class SearchForm extends StatefulWidget {
   @override

@@ -45,7 +45,7 @@ class ReviewList extends StatelessWidget {
           key: model.listKey,
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
-          itemBuilder: (context, index, animation) => ReviewTile(model.items[index]),
+          itemBuilder: (context, index, animation) => ReviewTile(model.items[index], animation),
         );
       },
     );

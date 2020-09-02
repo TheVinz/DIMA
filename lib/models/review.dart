@@ -6,6 +6,7 @@ class Review{
 
   Review({this.score, this.comment, this.userId, this.path});
 
+
   @override
   bool operator ==(Object other) {
     if(other.runtimeType != Review) return false;
