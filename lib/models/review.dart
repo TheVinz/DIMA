@@ -3,8 +3,9 @@ class Review{
   final String comment;
   final String userId;
   final String path;
+  final DateTime timestamp;
 
-  Review({this.score, this.comment, this.userId, this.path});
+  Review({this.score, this.comment, this.userId, this.path, this.timestamp});
 
 
   @override

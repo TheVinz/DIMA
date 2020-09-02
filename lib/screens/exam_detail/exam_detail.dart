@@ -41,10 +41,10 @@ class _ExamDetailState extends State<ExamDetail> {
     void _showSettingsPanel() {
       showModalBottomSheet(context: context, isScrollControlled: true, builder: (context) {
         return Container(
-            color: Colors.white,
-            height: MediaQuery.of(context).size.height * 0.7,
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-            child: ReviewForm(examPath: exam.path,));
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height * 0.7,
+          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+          child: ReviewForm(examPath: exam.path,));
       });
     }
 
@@ -90,13 +90,28 @@ class _ExamDetailState extends State<ExamDetail> {
                     )),
                 titlePadding: EdgeInsets.symmetric(horizontal: 20.0),
                 title: !innerBoxIsScrolled ?
-                  Text(exam.name,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                      backgroundColor: AppColors.darkblue.withAlpha(200)
+                  Hero(
+                    flightShuttleBuilder: (flightContext, animation, direction, fromHeroContext, toHeroContext, ) {
+                      final Hero toHero = toHeroContext.widget;
+                      final Text widget = toHero.child;
+                      return FadeTransition(
+                        opacity: animation.drive(Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.ease))),
+                        child: Container(
+                          color: AppColors.darkblue.withAlpha(100),
+                          child: Text(widget.data,
+                            style: TextStyle(fontSize: 24.0, color: Colors.white, fontWeight: FontWeight.w500),
+                            textAlign: TextAlign.center,)),
+                      );
+                    },
+                    tag: '${exam.path}_name',
+                    child: Text(exam.name,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                        backgroundColor: AppColors.darkblue.withAlpha(200)
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ) : null,
               ),
             ),
@@ -114,27 +129,74 @@ class _ExamDetailState extends State<ExamDetail> {
                           child: Column(
                             children: [
                               Center(
-                                child: CircleAvatar(
-                                  radius: 30.0,
-                                  backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score).withAlpha(100),
-                                  child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Image.asset('assets/polimilogo.png', color: exam.numReviews==0 ? Colors.grey[400] : AppColors.grey.withAlpha(150)),
-                                        Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 24.0,
-                                          ),
-                                          textAlign: TextAlign.center,),
-                                      ]
+                                child: Hero(
+                                  flightShuttleBuilder: (flightContext, animation, direction, fromHeroContext, toHeroContext, ) {
+                                    final Color target = exam.numReviews==0 ? Colors.grey[400] : AppColors.grey.withAlpha(150);
+                                    final a = target.alpha;
+                                    final r = target.red;
+                                    final g = target.green;
+                                    final b = target.blue;
+                                    double tmp = 1-animation.value;
+                                    return CircleAvatar(
+                                      backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score).withAlpha((100+animation.value * (255-100)).round()),
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Image.asset('assets/polimilogo.png', color:
+                                          Color.fromARGB(a+(animation.value*(255-a)).round(),
+                                              (tmp*(r)).round(),
+                                              (tmp*(g)).round(),
+                                              (tmp*(b)).round()),),
+                                          Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
+                                            style: TextStyle(
+                                              color: Colors.black.withAlpha((tmp*255).round()),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 24.0,
+                                            ),
+                                            textAlign: TextAlign.center,),
+                                        ],
+                                      )
+                                    );
+                                  },
+                                  tag: '${widget.exam.path}_avatar',
+                                  child: CircleAvatar(
+                                    radius: 30.0,
+                                    backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score).withAlpha(100),
+                                    child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Image.asset('assets/polimilogo.png', color: exam.numReviews==0 ? Colors.grey[400] : AppColors.grey.withAlpha(150)),
+                                          Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 24.0,
+                                            ),
+                                            textAlign: TextAlign.center,),
+                                        ]
+                                    ),
                                   ),
                                 ),
                               ),
                               Divider(height: 20, thickness: 1,),
-                              _Entry(title: "Teaching professor", value: exam.professor),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(child: Text('Teaching professor', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0,),)),
+                                  Expanded(child: Hero(
+                                    tag: '${exam.path}_prof',
+                                    child: Text(exam.professor, style: TextStyle(fontSize: 16.0), overflow: TextOverflow.visible, textAlign: TextAlign.center,
+                                    )))
+                                ],
+                              ),
                               Divider(height: 20, thickness: 1,),
-                              _Entry(title: "CFU", value: exam.cfu.toString()),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(child: Text('CFU', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0,),)),
+                                  Expanded(child: Text(exam.cfu.toString(), style: TextStyle(fontSize: 16.0), overflow: TextOverflow.visible, textAlign: TextAlign.center,))
+                                ],
+                              ),
                               Divider(height: 20, thickness: 2,),
                               Text(exam.description),
                             ],
@@ -152,23 +214,3 @@ class _ExamDetailState extends State<ExamDetail> {
     );
   }
 }
-
-class _Entry extends StatelessWidget {
-
-  final String title;
-  final String value;
-
-  _Entry({this.title, this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(child: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0,),)),
-        Expanded(child: Text(value, style: TextStyle(fontSize: 14.0), overflow: TextOverflow.visible, textAlign: TextAlign.center,))
-      ],
-    );
-  }
-}
-

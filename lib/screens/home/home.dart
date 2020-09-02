@@ -36,6 +36,7 @@ class _HomeState extends State<Home> {
       child: Navigator(
         key: _navigatorKeys[index],
         onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => screen),
+        observers: [HeroController()],
       ),
       offstage: _currentTab!=index,
     );

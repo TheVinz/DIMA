@@ -34,14 +34,24 @@ class _ReviewFormState extends State<ReviewForm> {
         key: _formKey,
         child: Column(
           children: [
-            Text('Submit a review', style: TextStyle(fontWeight: FontWeight.w600),),
+            Text('Submit a review', style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 18.0,
+            ),
+            ),
             SizedBox(height: 10.0,),
             TextFormField(
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.sentences,
               minLines: 2,
               maxLines: 4,
-              decoration: textInputDecoration.copyWith(hintText: 'Comment...',),
+              cursorColor: AppColors.lightblue,
+              decoration: textInputDecoration.copyWith(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: AppColors.lightblue)
+                ),
+                hintText: 'Comment...',),
               validator: (val) => (val==null || val=='') ? 'Please insert a comment' : null,
               onChanged: (val) => setState(() => comment=val),
             ),

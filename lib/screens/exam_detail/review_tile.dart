@@ -36,7 +36,17 @@ class ReviewTile extends StatelessWidget {
                   ),
                 ],
               ) : Text(review.score.toString()),
-              subtitle: Text(review.comment),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(review.comment,),
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    child: Text('${review.timestamp.year}/${review.timestamp.month}/${review.timestamp.day}',
+                      style: TextStyle(fontSize: 12.0,), textAlign: TextAlign.end,),
+                  )
+                ],
+              ),
             ),
           ),
         ),

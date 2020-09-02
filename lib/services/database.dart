@@ -79,42 +79,34 @@ class DatabaseServices {
           'num_reviews': numReviews + 1,
         });
       });
+
+      return await oldReview
+          .setData({
+            'comment': review.comment,
+            'score': review.score,
+            'timestamp': FieldValue.serverTimestamp()});
     } else {
-      double oldScore = await oldReview.get().then((value) => value.data['score']);
-      await Firestore.instance.runTransaction((transaction) async {
-        DocumentSnapshot exam = await transaction.get(Firestore.instance.document(examPath));
+        await deleteReview(_reviewFromSnapshot(await oldReview.get()));
+        return submitReview(examPath, review);
+    }
 
-        double totScore = exam.data['total_score'] ?? 0;
-        int numReviews = exam.data['num_reviews'] ?? 0;
-
-        await transaction.update(exam.reference, {
-          'total_score': totScore + (review.score-oldScore) / numReviews,
-        });
-      });
-      }
-
-    return await oldReview
-              .setData({'comment': review.comment, 'score': review.score});
   }
 
   Review _reviewFromSnapshot(DocumentSnapshot doc) {
+    Timestamp ts = doc.data['timestamp'];
     return Review(
       userId: doc.documentID,
       comment: doc.data['comment'],
       score: doc.data['score'],
       path: doc.reference.path,
+      timestamp: ts==null ? DateTime.now() : ts.toDate()
     );
-  }
-  Future<List<Review>> getReviews(String examPath) {
-    return Firestore.instance.document(examPath)
-        .collection('reviews')
-        .getDocuments()
-        .then((snapshot) => snapshot.documents.map(_reviewFromSnapshot).toList());
   }
   void submitReviewsListener(String examPath, ReviewModel model){
     Firestore.instance
         .document(examPath)
         .collection('reviews')
+        .orderBy('timestamp')
         .snapshots()
         .forEach((collection) => collection.documentChanges.forEach((element) {
           switch(element.type){

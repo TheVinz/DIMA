@@ -59,14 +59,27 @@ class FavTile extends StatelessWidget {
         return Card(
           child: ListTile(
             onTap: () => Navigator.push(context, PageRouteBuilder(
-                transitionDuration: Duration(milliseconds: 500),
+                transitionDuration: Duration(milliseconds: 700),
                 transitionsBuilder: transitionsBuilder,
                 pageBuilder: (context, _, __) => ExamDetail(exam: exam,))),
-            title: Text(exam.name),
-            subtitle: Text(exam.professor),
-            leading: CircleAvatar(
-              backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score),
-              child: Image.asset('assets/polimilogo.png', color: Colors.black),
+            title: Hero(
+                flightShuttleBuilder: (flightContext, animation, direction, fromHeroContext, toHeroContext, ) {
+                  final Hero toHero = toHeroContext.widget;
+                  final Text widget = toHero.child;
+                  return FadeTransition(
+                    opacity: animation.drive(Tween(begin: 1.0, end: 0.0)),
+                    child: Text(widget.data, style: TextStyle(fontSize: 16.0),),
+                  );
+                },
+                tag: '${exam.path}_name',
+                child: Text(exam.name)),
+            subtitle: Hero(child: Text(exam.professor), tag: '${exam.path}_prof'),
+            leading: Hero(
+              tag: '${exam.path}_avatar',
+              child: CircleAvatar(
+                backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score),
+                child: Image.asset('assets/polimilogo.png', color: Colors.black),
+              ),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,

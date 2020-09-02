@@ -36,18 +36,12 @@ class ReviewList extends StatelessWidget {
         builder: builder
     );
 
-    return FutureBuilder<List<Review>>(
-      future: DatabaseServices().getReviews(examPath),
-      initialData: [],
-      builder: (context, snapshot){
-        return AnimatedList(
+    return  AnimatedList(
           initialItemCount: model.items.length,
           key: model.listKey,
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
           itemBuilder: (context, index, animation) => ReviewTile(model.items[index], animation),
         );
-      },
-    );
   }
 }
