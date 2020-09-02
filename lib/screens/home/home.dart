@@ -62,7 +62,7 @@ class _HomeState extends State<Home> {
             unselectedIconTheme: IconThemeData(size: 20.0),
             backgroundColor: AppColors.darkblue,
             currentIndex: _currentTab,
-            onTap: (val) => this.setState(() => _currentTab = val),
+            onTap: (val) => val!=_currentTab ? this.setState(() => _currentTab = val) : null,
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.search),

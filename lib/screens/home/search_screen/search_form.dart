@@ -69,8 +69,10 @@ class _SearchFormState extends State<SearchForm> {
                 onPressed: () {
                   if(_formKey.currentState.validate()){
                     Filter filter = Filter(school: _currentSchool, degree: _currentDegree, exam: _currentExam);
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => SearchResult(filter: filter,)));
+                    Navigator.push(context, PageRouteBuilder(
+                      transitionDuration: Duration(milliseconds: 500),
+                      transitionsBuilder: transitionsBuilder,
+                      pageBuilder: (context, _, __) => SearchResult(filter: filter,)));
                   }
                 },
               )

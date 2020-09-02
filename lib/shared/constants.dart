@@ -16,3 +16,16 @@ const textInputDecoration = InputDecoration(
       borderSide: BorderSide(color: AppColors.lightblue, width: 2.0)
     ),
   );
+
+final RouteTransitionsBuilder transitionsBuilder = (context, animation, secondaryAnimation, child) {
+        final begin = Offset(0.0, 1.0);
+        final end = Offset.zero;
+        final curve = Curves.ease;
+
+        final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+        );
+    };

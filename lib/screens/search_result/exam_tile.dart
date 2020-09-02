@@ -43,9 +43,10 @@ class ExamTile extends StatelessWidget {
           ]
         ),
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ExamDetail(exam: exam, model: model)
-          ));
+          Navigator.push(context, PageRouteBuilder(
+              transitionDuration: Duration(milliseconds: 500),
+              transitionsBuilder: transitionsBuilder,
+              pageBuilder: (context, _, __) => ExamDetail(exam: exam,)));
         },
       ),
     );

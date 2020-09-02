@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:polimi_reviews/models/review.dart';
 import 'package:polimi_reviews/models/user.dart';
 import 'package:polimi_reviews/services/database.dart';
+import 'package:polimi_reviews/shared/constants.dart';
 import 'package:provider/provider.dart';
 
 class ReviewTile extends StatelessWidget {
@@ -28,7 +29,7 @@ class ReviewTile extends StatelessWidget {
                 Text(review.score.toString()),
                 GestureDetector(
                   onTap: () =>  DatabaseServices().deleteReview(review),
-                  child: Icon(Icons.delete),
+                  child: Icon(Icons.delete, color: AppColors.lightblue),
                 ),
               ],
             ) : Text(review.score.toString()),

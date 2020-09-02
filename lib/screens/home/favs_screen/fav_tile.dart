@@ -58,9 +58,10 @@ class FavTile extends StatelessWidget {
 
         return Card(
           child: ListTile(
-            onTap: () => Navigator.push(context, MaterialPageRoute(
-                builder: (context) => ExamDetail(exam: exam, model: model)
-            )),
+            onTap: () => Navigator.push(context, PageRouteBuilder(
+                transitionDuration: Duration(milliseconds: 500),
+                transitionsBuilder: transitionsBuilder,
+                pageBuilder: (context, _, __) => ExamDetail(exam: exam,))),
             title: Text(exam.name),
             subtitle: Text(exam.professor),
             leading: CircleAvatar(
@@ -75,7 +76,7 @@ class FavTile extends StatelessWidget {
                   onTap: () => model.remove(exam, _builder(exam)),
                   child: Padding(
                     padding: EdgeInsets.all(5.0),
-                    child: Icon(Icons.delete_sweep),
+                    child: Icon(Icons.delete_sweep, color: AppColors.lightblue),
                   ),
                 )
               ],

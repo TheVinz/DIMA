@@ -7,48 +7,15 @@ import 'package:polimi_reviews/screens/exam_detail/review_list.dart';
 import 'package:polimi_reviews/services/database.dart';
 import 'package:polimi_reviews/shared/constants.dart';
 import 'package:polimi_reviews/shared/utils.dart';
+import 'package:provider/provider.dart';
 
-class ExamDetail extends StatefulWidget {
+class ExamDetail extends StatelessWidget {
 
   final Exam exam;
-  final FavsModel model;
-  ExamDetail({@required this.exam, @required this.model});
+  final ReviewList _reviewList;
+  ExamDetail({@required this.exam,}):
+        _reviewList = ReviewList(examPath: exam.path,);
 
-  @override
-  _ExamDetailState createState() => _ExamDetailState();
-}
-
-class _ExamDetailState extends State<ExamDetail> {
-
-  Exam exam;
-  bool isFav;
-  Function listener;
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    widget.model.removeListener(listener);
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    exam = widget.exam;
-    isFav = widget.model.items.contains(exam);
-
-    listener = () {
-      if(this.mounted)
-        setState(() => isFav = widget.model.items.contains(exam));
-    };
-
-    widget.model.addListener(listener);
-  }
-
-  void _toggleFav(){
-    isFav ? widget.model.remove(exam, (context, animation) => Container())
-      : widget.model.add(exam);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,47 +36,48 @@ class _ExamDetailState extends State<ExamDetail> {
         child: Icon(Icons.comment),
         backgroundColor: AppColors.lightblue,
       ),
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              automaticallyImplyLeading: false,
-              expandedHeight: 200.0,
-              floating: false,
-              pinned: true,
-              centerTitle: true,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                background: Container(
-                    padding: EdgeInsets.only(top: 25.0, bottom: 5.0),
-                    child: Image.asset('assets/polimilogo.png',
-                      color: (exam.numReviews == 0 ? Colors.black : getGradient(exam.score)).withAlpha(100),
-                    )),
-                title: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
-                  child: Text(exam.name,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
+      body: StreamBuilder<Exam>(
+        stream: DatabaseServices().examStream(exam.path),
+        builder:(context, snapshot) {
+          Exam exam = snapshot.hasData ? snapshot.data : this.exam;
+          return NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  expandedHeight: 200.0,
+                  floating: false,
+                  pinned: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    background: Container(
+                        padding: EdgeInsets.only(top: 25.0, bottom: 5.0),
+                        child: Image.asset('assets/polimilogo.png',
+                          color: (exam.numReviews == 0 ? Colors.black : getGradient(exam.score)).withAlpha(100),
+                        )),
+                    title: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Text(exam.name,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: innerBoxIsScrolled ? 1 : 5,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
-              ),
-            ),
 
-          ];
-        },
-        body: Padding(
-          padding: EdgeInsets.all(5),
-          child: SingleChildScrollView(
-            child: Column(
-                children: [
-                  StreamBuilder<Exam>(
-                    stream: DatabaseServices().examStream(widget.exam.path),
-                    builder:(context, snapshot) {
-                      final Exam exam = snapshot.hasData ? snapshot.data : widget.exam;
-                      return Card(
+              ];
+            },
+            body: Padding(
+              padding: EdgeInsets.all(5),
+              child: SingleChildScrollView(
+                child: Column(
+                    children: [
+                      Card(
                         child: Padding(
                           padding: EdgeInsets.only(top: 0.0, bottom: 40.0, left: 20.0, right: 20.0),
                           child: Column(
@@ -118,10 +86,16 @@ class _ExamDetailState extends State<ExamDetail> {
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  FlatButton.icon(
-                                    icon: Icon(isFav ? Icons.star : Icons.star_border, color: Colors.yellow[800]),
-                                    onPressed: _toggleFav,
-                                    label: Material(),
+                                  Consumer<FavsModel>(
+                                    builder: (context, model, _) {
+                                      bool isFav = model.items.contains(exam);
+                                      return FlatButton.icon(
+                                        icon: Icon(isFav ? Icons.star : Icons.star_border, color: Colors.yellow[800]),
+                                        onPressed: () =>
+                                          isFav ? model.remove(exam, (context, animation) => Material()) : model.add(exam),
+                                        label: Material(),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
@@ -132,7 +106,8 @@ class _ExamDetailState extends State<ExamDetail> {
                                   child: Stack(
                                       alignment: Alignment.center,
                                       children: [
-                                        Image.asset('assets/polimilogo.png', color: AppColors.grey.withAlpha(150)),
+                                        Image.asset('assets/polimilogo.png',
+                                            color: exam.numReviews==0 ? Colors.grey[350] : AppColors.grey.withAlpha(150)),
                                         Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -152,16 +127,16 @@ class _ExamDetailState extends State<ExamDetail> {
                             ],
                           ),
                         ),
-                      );
-                    },
-                  ),
-                  Text('Reviews', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),),
-                  ReviewList(examPath: exam.path,),
-                  SizedBox(height: 50.0,)
-                ]
+                      ),
+                      Text('Reviews', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),),
+                      _reviewList,
+                      SizedBox(height: 50.0,)
+                    ]
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

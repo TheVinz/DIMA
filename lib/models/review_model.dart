@@ -19,8 +19,7 @@ class ReviewModel {
 
   void add(Review item) {
     _items.insert(0, item);
-    if(_listKey.currentState != null)
-      _listKey.currentState.insertItem(0);
+    _listKey.currentState.insertItem(0);
   }
 
   void remove(Review item) {
@@ -34,7 +33,6 @@ class ReviewModel {
   void update(Review item){
     final int index = _items.indexOf(item);
     _items[index] = item;
-    _listKey.currentState.removeItem(index, (context, animation) => Material());
-    _listKey.currentState.insertItem(index);
+    if (_listKey.currentState!=null) _listKey.currentState.setState(() {});
   }
 }
