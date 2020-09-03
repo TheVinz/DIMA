@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:polimi_reviews/models/review.dart';
 import 'package:polimi_reviews/models/user.dart';
@@ -7,6 +8,7 @@ import 'package:polimi_reviews/shared/constants.dart';
 import 'package:polimi_reviews/shared/loading.dart';
 import 'package:polimi_reviews/shared/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ReviewForm extends StatefulWidget {
   
@@ -41,28 +43,24 @@ class _ReviewFormState extends State<ReviewForm> {
             SizedBox(height: 20.0,),
             Text('How much did you like this exam?', style: TextStyle(fontSize: 15.0),),
             SizedBox(height: 20.0,),
-            ScoreAvatar(score, radius: 25.0,),
-            SliderTheme(
-              data: SliderThemeData(
-                trackShape: RoundedRectSliderTrackShape(),
-                activeTrackColor: getGradient(score),
-                thumbColor: getGradient(score),
-                overlayColor: AppColors.grey.withAlpha(100),
-                valueIndicatorColor: AppColors.lightblue,
-                inactiveTrackColor: AppColors.grey,
-                tickMarkShape: RoundSliderTickMarkShape(tickMarkRadius: 2.0),
-                activeTickMarkColor: AppColors.grey,
-                inactiveTickMarkColor: Colors.white,
-
-              ),
-              child: Slider(
-                label: score.toString(),
-                value: score,
-                min: 0.0,
-                max: 5.0,
-                divisions: 10,
-                onChanged: (val) => setState(() => score = val),
-              ),
+            Stack(children: [
+              ScoreAvatar(radius: 25.0,),
+              CircleAvatar(
+                radius: 25.0,
+                backgroundColor: Colors.white.withAlpha(100),
+                child: Text(score.toString(),
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
+                ),
+              )
+            ],),
+            RatingBar(
+              itemSize: 35.0,
+              glow: false,
+              initialRating: score,
+              allowHalfRating: true,
+              itemBuilder: (context, index) => Icon(Icons.star, color: Colors.yellow[800],),
+              unratedColor: AppColors.grey,
+              onRatingUpdate: (value) => this.setState(() => score = value),
             ),
             SizedBox(height: 10.0,),
             TextFormField(

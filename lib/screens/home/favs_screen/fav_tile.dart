@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:polimi_reviews/models/favs_model.dart';
 import 'package:polimi_reviews/models/school.dart';
 import 'package:polimi_reviews/screens/exam_detail/exam_detail.dart';
@@ -24,12 +25,23 @@ class FavTile extends StatelessWidget {
               child: ListTile(
                 title: Text(exam.name),
                 subtitle: Text(exam.professor),
-                leading: CircleAvatar(
-                  backgroundColor: exam.numReviews == 0
-                      ? AppColors.grey
-                      : getGradient(exam.score),
-                  child: Image.asset(
-                      'assets/polimilogo.png', color: Colors.black),
+                leading:Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    CircleAvatar(
+                      radius: 20.0,
+                      backgroundColor: exam.numReviews==0 ? AppColors.grey : AppColors.lightblue,
+                      child: Image.asset('assets/polimilogo.png',
+                          color: Colors.black),
+                    ),
+                    RatingBarIndicator(
+                        unratedColor: AppColors.lightblue.withAlpha(150),
+                        itemPadding: EdgeInsets.symmetric(horizontal: 0),
+                        itemSize: 13.0,
+                        rating: exam.numReviews==0 ? 5 : exam.score,
+                        itemCount: 5,
+                        itemBuilder: (_, __) => Icon(Icons.star, color: exam.numReviews==0 ? AppColors.grey : Colors.yellow[800]))
+                  ],
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -74,12 +86,29 @@ class FavTile extends StatelessWidget {
                 tag: '${exam.path}_name',
                 child: Text(exam.name)),
             subtitle: Hero(child: Text(exam.professor), tag: '${exam.path}_prof'),
-            leading: Hero(
-              tag: '${exam.path}_avatar',
-              child: CircleAvatar(
-                backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score),
-                child: Image.asset('assets/polimilogo.png', color: Colors.black),
-              ),
+            leading: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Hero(
+                  tag: '${exam.path}_avatar',
+                  child: CircleAvatar(
+                    radius: 20.0,
+                    backgroundColor: exam.numReviews==0 ? AppColors.grey : AppColors.lightblue,
+                    child: Image.asset('assets/polimilogo.png',
+                        color: Colors.black),
+                  ),
+                ),
+                Hero(
+                  tag: '${exam.path}_rating',
+                  child: RatingBarIndicator(
+                      unratedColor: AppColors.lightblue.withAlpha(150),
+                      itemPadding: EdgeInsets.symmetric(horizontal: 0),
+                      itemSize: 13.0,
+                      rating: exam.numReviews==0 ? 5 : exam.score,
+                      itemCount: 5,
+                      itemBuilder: (_, __) => Icon(Icons.star, color: exam.numReviews==0 ? AppColors.grey : Colors.yellow[800])),
+                )
+              ],
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,

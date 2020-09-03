@@ -31,7 +31,7 @@ class FavsModel extends ChangeNotifier {
 
   Future remove(Exam item, AnimatedListRemovedItemBuilder builder) {
     final index = _items.indexOf(item);
-    _listKey.currentState.removeItem(index, builder, duration: Duration(milliseconds: 300));
+    _listKey.currentState.removeItem(index, builder, duration: Duration(milliseconds: 500));
     Exam e = _items.removeAt(index);
     assert(e==item);
     notifyListeners();

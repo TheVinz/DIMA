@@ -37,24 +37,18 @@ final RouteTransitionsBuilder transitionsBuilder = (context, animation, secondar
 
 class ScoreAvatar extends StatelessWidget {
 
-  final double score;
   final double radius;
-  ScoreAvatar(this.score, {this.radius=30.0});
+  ScoreAvatar({this.radius=30.0});
 
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      backgroundColor: getGradient(score),
+      backgroundColor: AppColors.lightblue,
       child: Stack(
         alignment: Alignment.center,
         children: [
           Image.asset('assets/polimilogo.png', color: Colors.black),
-          CircleAvatar(
-            radius: radius,
-            backgroundColor: Colors.white.withAlpha(200),
-            child: Text(score.toString(), style: TextStyle(fontSize: radius, fontWeight: FontWeight.w700),),
-          ),
         ],
       ),
     );
