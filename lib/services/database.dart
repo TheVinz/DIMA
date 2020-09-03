@@ -101,6 +101,8 @@ class DatabaseServices {
       comment: doc.data['comment'],
       score: doc.data['score'],
       path: doc.reference.path,
+      likes: doc.data['likes'] ?? 0,
+      uidLikes: List<String>.from(doc.data['uidLikes'] ?? []),
       timestamp: ts==null ? DateTime.now() : ts.toDate()
     );
   }
@@ -190,6 +192,20 @@ class DatabaseServices {
             score: (doc.data['total_score'] ?? 0),
             numReviews: (doc.data['num_reviews'] ?? 0),
           ));
+  }
+
+  Future likeReview(Review review) async {
+    return await Firestore.instance.runTransaction((transaction) async {
+      DocumentReference reviewRef = Firestore.instance.document(review.path);
+      DocumentSnapshot snapshot = await transaction.get(reviewRef);
+      List<String> uidLikes = List<String>.from(snapshot.data['uidLikes'] ?? []);
+      uidLikes.contains(uid) ? uidLikes.remove(uid) : uidLikes.add(uid);
+      int likes = uidLikes.length;
+      await transaction.update(reviewRef, {
+        'uidLikes': uidLikes,
+        'likes' : likes,
+      });
+    });
   }
 
 }
