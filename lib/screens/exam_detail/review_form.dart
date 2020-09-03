@@ -36,8 +36,31 @@ class _ReviewFormState extends State<ReviewForm> {
           children: [
             Text('Submit a review', style: TextStyle(
               fontWeight: FontWeight.w500,
-              fontSize: 18.0,
+              fontSize: 20.0,),
             ),
+            SizedBox(height: 20.0,),
+            Text('How much did you like this exam?', style: TextStyle(fontSize: 15.0),),
+            SliderTheme(
+              data: SliderThemeData(
+                trackShape: RoundedRectSliderTrackShape(),
+                activeTrackColor: getGradient(score),
+                thumbColor: getGradient(score),
+                overlayColor: AppColors.grey.withAlpha(100),
+                valueIndicatorColor: AppColors.lightblue,
+                inactiveTrackColor: AppColors.grey,
+                tickMarkShape: RoundSliderTickMarkShape(tickMarkRadius: 2.0),
+                activeTickMarkColor: AppColors.grey,
+                inactiveTickMarkColor: Colors.white,
+
+              ),
+              child: Slider(
+                label: score.toString(),
+                value: score,
+                min: 0.0,
+                max: 5.0,
+                divisions: 10,
+                onChanged: (val) => setState(() => score = val),
+              ),
             ),
             SizedBox(height: 10.0,),
             TextFormField(
@@ -54,18 +77,6 @@ class _ReviewFormState extends State<ReviewForm> {
                 hintText: 'Comment...',),
               validator: (val) => (val==null || val=='') ? 'Please insert a comment' : null,
               onChanged: (val) => setState(() => comment=val),
-            ),
-            SizedBox(height: 20.0,),
-            Text('How much did you like this exam?', textAlign: TextAlign.left,),
-            Slider(
-              label: score.toString(),
-              value: score,
-              activeColor: getGradient(score),
-              inactiveColor: getGradient(score),
-              min: 0.0,
-              max: 5.0,
-              divisions: 10,
-              onChanged: (val) => setState(() => score = val),
             ),
             SizedBox(height: 20.0,),
             Visibility(

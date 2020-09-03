@@ -164,39 +164,27 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
                             children: [
                               Center(
                                 child: Hero(
-                                  flightShuttleBuilder: (flightContext, animation, direction, fromHeroContext, toHeroContext, ) {
-                                    final Color target = exam.numReviews==0 ? Colors.grey[400] : AppColors.grey.withAlpha(150);
-                                    final a = target.alpha;
-                                    final r = target.red;
-                                    final g = target.green;
-                                    final b = target.blue;
-                                    double tmp = 1-animation.value;
-                                    return CircleAvatar(
-                                      backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score).withAlpha((100+animation.value * (255-100)).round()),
-                                      child: Image.asset('assets/polimilogo.png', color:
-                                          Color.fromARGB(a+(animation.value*(255-a)).round(),
-                                              (tmp*(r)).round(),
-                                              (tmp*(g)).round(),
-                                              (tmp*(b)).round()),),
-                                      );
-                                  },
                                   tag: '${widget.exam.path}_avatar',
                                   child: CircleAvatar(
                                     radius: 30.0,
-                                    backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score).withAlpha(100),
+                                    backgroundColor: exam.numReviews==0 ? AppColors.grey : getGradient(exam.score),
                                     child: Stack(
                                         alignment: Alignment.center,
                                         children: [
-                                          Image.asset('assets/polimilogo.png', color: exam.numReviews==0 ? Colors.grey[400] : AppColors.grey.withAlpha(150)),
+                                          Image.asset('assets/polimilogo.png', color: Colors.black),
                                           FadeTransition(
                                             opacity: _scoreAnimation,
-                                            child: Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 24.0,
-                                              ),
-                                              textAlign: TextAlign.center,),
+                                            child: CircleAvatar(
+                                              radius: 30.0,
+                                              backgroundColor: Colors.white.withAlpha(150),
+                                              child: Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 24.0,
+                                                ),
+                                                textAlign: TextAlign.center,),
+                                            ),
                                           ),
                                         ]
                                     ),
