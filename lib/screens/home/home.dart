@@ -42,6 +42,15 @@ class _HomeState extends State<Home> {
     );
   }
 
+  void _selectTab(int tabItem) {
+    if (tabItem == _currentTab) {
+      // pop to first route
+      _navigatorKeys[tabItem].currentState.popUntil((route) => route.isFirst);
+    } else {
+      setState(() => _currentTab = tabItem);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -52,13 +61,18 @@ class _HomeState extends State<Home> {
 
     return paths==null? Container(color: Colors.white, child: Loading()) : WillPopScope(
       onWillPop: () async {
-        if(_currentTab != TabIndexes.search){
-          this.setState(() {
-            _currentTab=TabIndexes.search;
-          });
-          return false;
+        final isFirstRouteInCurrentTab = !await _navigatorKeys[_currentTab].currentState.maybePop();
+        if (isFirstRouteInCurrentTab) {
+          // if not on the 'main' tab
+          if (_currentTab != TabIndexes.search) {
+            // select 'main' tab
+            _selectTab(TabIndexes.search);
+            // back button handled by app
+            return false;
+          }
         }
-        else return ! await _navigatorKeys[_currentTab].currentState.maybePop();
+        // let system handle back button if we're on the first route
+        return isFirstRouteInCurrentTab;
       },
       child: ChangeNotifierProvider<FavsModel>(
         create: (_) => FavsModel(paths, uid:uid),

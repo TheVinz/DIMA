@@ -44,7 +44,7 @@ class ReviewModel {
       }
       return false;
     });
-    if(index < 0) index = 0;
+    if(index < 0) index = items.length;
     _items.insert(index, item);
     _listKey.currentState.insertItem(index, duration: Duration(milliseconds: 500));
   }

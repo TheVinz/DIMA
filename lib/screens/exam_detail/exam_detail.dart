@@ -80,6 +80,9 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
       onWillPop: () => _scroll
           .animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.ease)
           .then((_) async {
+            setState(() {
+              scrollable=false;
+            });
             await _controller.reverse();
             Navigator.of(context).pop();
             return true;
