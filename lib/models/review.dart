@@ -1,11 +1,12 @@
 class Review{
   final double score;
   final String comment;
-  final String userId;
+  final String author;
   final String path;
+  final String userId;
   final DateTime timestamp;
 
-  Review({this.score, this.comment, this.userId, this.path, this.timestamp});
+  Review({this.score, this.comment, this.userId, this.author, this.path, this.timestamp});
 
 
   @override

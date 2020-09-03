@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:polimi_reviews/models/review.dart';
 import 'package:polimi_reviews/models/review_model.dart';
 import 'package:polimi_reviews/screens/exam_detail/review_tile.dart';
-import 'package:polimi_reviews/services/database.dart';
 
 class ReviewList extends StatelessWidget {
 
@@ -18,7 +17,7 @@ class ReviewList extends StatelessWidget {
         ),
         child: Card(
           child: ListTile(
-            title: Text(''),
+            title: Text(review.author),
             subtitle: Text(review.comment),
           ),
         )

@@ -59,7 +59,7 @@ class FavTile extends StatelessWidget {
         return Card(
           child: ListTile(
             onTap: () => Navigator.push(context, PageRouteBuilder(
-                transitionDuration: Duration(milliseconds: 700),
+                transitionDuration: transitionDuration,
                 transitionsBuilder: transitionsBuilder,
                 pageBuilder: (context, _, __) => ExamDetail(exam: exam,))),
             title: Hero(

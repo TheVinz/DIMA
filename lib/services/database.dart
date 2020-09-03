@@ -82,6 +82,7 @@ class DatabaseServices {
 
       return await oldReview
           .setData({
+            'author' : await usersCollection.document(uid).get().then((doc) => doc.data['name']),
             'comment': review.comment,
             'score': review.score,
             'timestamp': FieldValue.serverTimestamp()});
@@ -96,6 +97,7 @@ class DatabaseServices {
     Timestamp ts = doc.data['timestamp'];
     return Review(
       userId: doc.documentID,
+      author: doc.data['author'],
       comment: doc.data['comment'],
       score: doc.data['score'],
       path: doc.reference.path,

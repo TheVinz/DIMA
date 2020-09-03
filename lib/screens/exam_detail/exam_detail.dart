@@ -1,5 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:polimi_reviews/external/custom_nested_scroll_view.dart';
 import 'package:polimi_reviews/models/favs_model.dart';
 import 'package:polimi_reviews/models/school.dart';
 import 'package:polimi_reviews/screens/exam_detail/review_form.dart';
@@ -18,17 +22,33 @@ class ExamDetail extends StatefulWidget {
   _ExamDetailState createState() => _ExamDetailState();
 }
 
-class _ExamDetailState extends State<ExamDetail> {
+class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateMixin {
 
   Exam exam;
   ReviewList _reviewList;
+  AnimationController _controller;
+  Animation _scoreAnimation;
+  bool scrollable = false;
+
 
   @override
   void initState() {
     super.initState();
     exam = widget.exam;
-
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1000)
+    );
     _reviewList = ReviewList(examPath: exam.path,);
+    _scoreAnimation = Tween<double>(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.decelerate));
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Future.delayed(transitionDuration, () {
+        _controller.forward();
+        setState(() => scrollable = true);
+      });
+    });
 
     DatabaseServices().examStream(exam.path).listen((event) {
       if(this.mounted) setState(() => exam = event);
@@ -54,7 +74,8 @@ class _ExamDetailState extends State<ExamDetail> {
         child: Icon(Icons.comment),
         backgroundColor: AppColors.lightblue,
       ),
-      body: NestedScrollView(
+      body: CustomNestedScrollView(
+        physics: scrollable ? ScrollPhysics() : NeverScrollableScrollPhysics(),
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
@@ -99,7 +120,7 @@ class _ExamDetailState extends State<ExamDetail> {
                         child: Container(
                           color: AppColors.darkblue.withAlpha(100),
                           child: Text(widget.data,
-                            style: TextStyle(fontSize: 24.0, color: Colors.white, fontWeight: FontWeight.w500),
+                            style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.w500),
                             textAlign: TextAlign.center,)),
                       );
                     },
@@ -121,6 +142,7 @@ class _ExamDetailState extends State<ExamDetail> {
           padding: EdgeInsets.all(5),
             child:
               SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
                 child: Column(
                     children: [
                       Card(
@@ -154,13 +176,16 @@ class _ExamDetailState extends State<ExamDetail> {
                                         alignment: Alignment.center,
                                         children: [
                                           Image.asset('assets/polimilogo.png', color: exam.numReviews==0 ? Colors.grey[400] : AppColors.grey.withAlpha(150)),
-                                          Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 24.0,
-                                            ),
-                                            textAlign: TextAlign.center,),
+                                          FadeTransition(
+                                            opacity: _scoreAnimation,
+                                            child: Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 24.0,
+                                              ),
+                                              textAlign: TextAlign.center,),
+                                          ),
                                         ]
                                     ),
                                   ),

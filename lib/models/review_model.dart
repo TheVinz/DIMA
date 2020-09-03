@@ -19,13 +19,13 @@ class ReviewModel {
 
   void add(Review item) {
     _items.insert(0, item);
-    _listKey.currentState.insertItem(0);
+    _listKey.currentState.insertItem(0, duration: Duration(milliseconds: 500));
   }
 
   void remove(Review item) {
     final index = _items.indexOf(item);
     if(_listKey.currentState != null)
-      _listKey.currentState.removeItem(index, builder(item), duration: Duration(milliseconds: 300));
+      _listKey.currentState.removeItem(index, builder(item), duration: Duration(milliseconds: 500));
     Review e = _items.removeAt(index);
     assert(e==item);
   }

@@ -17,5 +17,6 @@ const textInputDecoration = InputDecoration(
     ),
   );
 
+const transitionDuration = Duration(milliseconds: 1500);
 
 

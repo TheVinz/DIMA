@@ -16,38 +16,32 @@ class ReviewTile extends StatelessWidget {
 
     final user = Provider.of<User>(context);
 
-    return FutureBuilder<String>(
-      future: DatabaseServices().getUserName(review.userId),
-      builder: (context, author) => Padding(
-        padding: review.userId==user.uid ? EdgeInsets.only(left: 20.0) : EdgeInsets.only(right: 20.0),
-        child: SlideTransition(
-          position: animation.drive(Tween(begin: Offset(1.0, 0), end: Offset.zero)),
-          child: Card(
-            child: ListTile(
-              title: Text(author.data ?? ''),
-              trailing: review.userId==user.uid ? Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(review.score.toString()),
-                  GestureDetector(
-                    onTap: () =>  DatabaseServices().deleteReview(review),
-                    child: Icon(Icons.delete, color: AppColors.lightblue),
-                  ),
-                ],
-              ) : Text(review.score.toString()),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(review.comment,),
-                  Container(
-                    alignment: Alignment.bottomRight,
-                    child: Text('${review.timestamp.year}/${review.timestamp.month}/${review.timestamp.day}',
-                      style: TextStyle(fontSize: 12.0,), textAlign: TextAlign.end,),
-                  )
-                ],
+    return SlideTransition(
+      position: animation.drive(Tween(begin: Offset(1.0, 0), end: Offset.zero)),
+      child: Card(
+        child: ListTile(
+          title: Text(review.author),
+          trailing: review.userId==user.uid ? Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(review.score.toString()),
+              GestureDetector(
+                onTap: () =>  DatabaseServices().deleteReview(review),
+                child: Icon(Icons.delete, color: AppColors.lightblue),
               ),
-            ),
+            ],
+          ) : Text(review.score.toString()),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(review.comment,),
+              Container(
+                alignment: Alignment.bottomRight,
+                child: Text('${review.timestamp.year}/${review.timestamp.month}/${review.timestamp.day}',
+                  style: TextStyle(fontSize: 12.0,), textAlign: TextAlign.end,),
+              )
+            ],
           ),
         ),
       ),
