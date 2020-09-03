@@ -1,6 +1,3 @@
-import 'dart:ffi';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:polimi_reviews/external/custom_nested_scroll_view.dart';
@@ -37,7 +34,7 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
     exam = widget.exam;
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000)
+      duration: Duration(milliseconds: 700)
     );
     _reviewList = ReviewList(examPath: exam.path,);
     _scoreAnimation = Tween<double>(begin: 0.0, end: 1.0)
@@ -60,8 +57,9 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
     _controller.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -91,13 +89,7 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              title: innerBoxIsScrolled ?
-                Text(
-                  exam.name,
-                  style: TextStyle(fontSize: 16),
-                  overflow: TextOverflow.fade,
-                ) : null,
-              actions: innerBoxIsScrolled ? [
+              actions: [
                 Consumer<FavsModel>(
                   builder: (_, model, __) => GestureDetector(
                     child: Padding(
@@ -108,44 +100,37 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
                       : model.add(exam),
                   ),
                 ),
-              ] : [],
-              automaticallyImplyLeading: false,
+              ],
               expandedHeight: 200.0,
               floating: false,
               pinned: true,
-              centerTitle: true,
               flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
                 background: Container(
                     padding: EdgeInsets.only(top: 25.0, bottom: 5.0),
                     child: Image.asset('assets/polimilogo.png',
                       color: (exam.numReviews == 0 ? Colors.black : getGradient(exam.score)).withAlpha(100),
                     )),
-                titlePadding: EdgeInsets.symmetric(horizontal: 20.0),
-                title: !innerBoxIsScrolled ?
-                  Hero(
-                    flightShuttleBuilder: (flightContext, animation, direction, fromHeroContext, toHeroContext, ) {
-                      final Hero toHero = toHeroContext.widget;
-                      final Text widget = toHero.child;
-                      return FadeTransition(
-                        opacity: animation.drive(Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.ease))),
-                        child: Container(
-                          color: AppColors.darkblue.withAlpha(100),
-                          child: Text(widget.data,
-                            style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.w500),
-                            textAlign: TextAlign.center,)),
-                      );
-                    },
-                    tag: '${exam.path}_name',
-                    child: Text(exam.name,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                        backgroundColor: AppColors.darkblue.withAlpha(200)
-                      ),
-                      textAlign: TextAlign.center,
+                title: Hero(
+                  flightShuttleBuilder: (flightContext, animation, direction, fromHeroContext, toHeroContext, ) {
+                    final Hero toHero = toHeroContext.widget;
+                    final Text widget = toHero.child;
+                    return FadeTransition(
+                      opacity: animation.drive(Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.ease))),
+                      child: Container(
+                        color: AppColors.darkblue.withAlpha(100),
+                        child: Text(widget.data,
+                          style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.w500),)),
+                    );
+                  },
+                  tag: '${exam.path}_name',
+                  child: Text(exam.name,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      backgroundColor: AppColors.darkblue.withAlpha(200)
                     ),
-                  ) : null,
+                  ),
+                ),
               ),
             ),
           ];
@@ -176,7 +161,7 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
                                             opacity: _scoreAnimation,
                                             child: CircleAvatar(
                                               radius: 30.0,
-                                              backgroundColor: Colors.white.withAlpha(150),
+                                              backgroundColor: Colors.white.withAlpha(200),
                                               child: Text((exam.numReviews==0 ? '0' : exam.score.toStringAsFixed(2)),
                                                 style: TextStyle(
                                                   color: Colors.black,

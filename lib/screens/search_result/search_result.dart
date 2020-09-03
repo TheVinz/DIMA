@@ -16,9 +16,6 @@ class SearchResult extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        leading: Padding(
-            padding: EdgeInsets.all(5.0),
-            child: LogoIcon(color: Colors.white)),
         title: Text('Search result', style: TextStyle(fontSize: 18.0),),
         actions: [
           FlatButton.icon(onPressed:() => AuthService().signOut(),

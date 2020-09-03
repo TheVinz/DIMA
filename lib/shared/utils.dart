@@ -28,53 +28,35 @@ class LogoIcon extends StatelessWidget {
   }
 }
 
-class ScoreAvatar extends StatelessWidget {
-
-  final double score;
-
-  ScoreAvatar(this.score);
-
-  @override
-  Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 30.0,
-      backgroundColor: getGradient(score).withAlpha(100),
-      child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Image.asset('assets/polimilogo.png', color: AppColors.grey.withAlpha(150)),
-            Text((score.toStringAsFixed(2)),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24.0,
-              ),
-              textAlign: TextAlign.center,),
-          ]
-      ),
-    );
-  }
-}
-
-final emptyScoreAvatar = CircleAvatar(
-  radius: 30.0,
-  backgroundColor: AppColors.grey,
-  child: Stack(
-      alignment: Alignment.center,
-      children: [
-        Image.asset('assets/polimilogo.png', color: Colors.grey[400]),
-        Text('0',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24.0,
-          ),
-          textAlign: TextAlign.center,),
-      ]
-  ),
-);
-
 final RouteTransitionsBuilder transitionsBuilder = (context, animation, secondaryAnimation, child) {
   return FadeTransition(
     opacity: animation.drive(Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.ease))),
     child: child,
   );
 };
+
+class ScoreAvatar extends StatelessWidget {
+
+  final double score;
+  final double radius;
+  ScoreAvatar(this.score, {this.radius=30.0});
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: getGradient(score),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Image.asset('assets/polimilogo.png', color: Colors.black),
+          CircleAvatar(
+            radius: radius,
+            backgroundColor: Colors.white.withAlpha(200),
+            child: Text(score.toString(), style: TextStyle(fontSize: radius, fontWeight: FontWeight.w700),),
+          ),
+        ],
+      ),
+    );
+  }
+}

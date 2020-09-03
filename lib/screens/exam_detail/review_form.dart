@@ -20,7 +20,7 @@ class ReviewForm extends StatefulWidget {
 class _ReviewFormState extends State<ReviewForm> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  double score = 0;
+  double score = 2.5;
   String comment = '';
   bool loading = false;
 
@@ -40,6 +40,8 @@ class _ReviewFormState extends State<ReviewForm> {
             ),
             SizedBox(height: 20.0,),
             Text('How much did you like this exam?', style: TextStyle(fontSize: 15.0),),
+            SizedBox(height: 20.0,),
+            ScoreAvatar(score, radius: 25.0,),
             SliderTheme(
               data: SliderThemeData(
                 trackShape: RoundedRectSliderTrackShape(),

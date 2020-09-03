@@ -3,6 +3,7 @@ import 'package:polimi_reviews/models/review.dart';
 import 'package:polimi_reviews/models/user.dart';
 import 'package:polimi_reviews/services/database.dart';
 import 'package:polimi_reviews/shared/constants.dart';
+import 'package:polimi_reviews/shared/utils.dart';
 import 'package:provider/provider.dart';
 
 class ReviewTile extends StatelessWidget {
@@ -20,18 +21,12 @@ class ReviewTile extends StatelessWidget {
       position: animation.drive(Tween(begin: Offset(1.0, 0), end: Offset.zero)),
       child: Card(
         child: ListTile(
-          title: Text(review.author),
-          trailing: review.userId==user.uid ? Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(review.score.toString()),
-              GestureDetector(
+          title: Text(review.author, style: TextStyle(fontWeight: FontWeight.w500),),
+          leading: ScoreAvatar(review.score, radius: 16.0,),
+          trailing: review.userId==user.uid ? GestureDetector(
                 onTap: () =>  DatabaseServices().deleteReview(review),
                 child: Icon(Icons.delete, color: AppColors.lightblue),
-              ),
-            ],
-          ) : Text(review.score.toString()),
+              ) : null,
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
