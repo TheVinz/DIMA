@@ -51,7 +51,15 @@ class _HomeState extends State<Home> {
       DatabaseServices(uid:uid).favourites.then((value) => setState(() => paths = value));
 
     return paths==null? Container(color: Colors.white, child: Loading()) : WillPopScope(
-      onWillPop: () async => ! await _navigatorKeys[_currentTab].currentState.maybePop(),
+      onWillPop: () async {
+        if(_currentTab != TabIndexes.search){
+          this.setState(() {
+            _currentTab=TabIndexes.search;
+          });
+          return false;
+        }
+        else return ! await _navigatorKeys[_currentTab].currentState.maybePop();
+      },
       child: ChangeNotifierProvider<FavsModel>(
         create: (_) => FavsModel(paths, uid:uid),
         child: Scaffold(

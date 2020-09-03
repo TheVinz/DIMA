@@ -229,9 +229,18 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
                             ),
                           ),
                         ),
-                        Text('Reviews', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),),
-                        _reviewList,
-                        SizedBox(height: 50.0,)
+                        Card(
+                          elevation: 0.0,
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 5.0,),
+                              Text('Reviews', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),),
+                              _reviewList,
+                              SizedBox(height: 50.0,)
+                            ],
+                          ),
+                        ),
                       ]
                   ),
                 ),

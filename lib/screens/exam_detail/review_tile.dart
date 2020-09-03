@@ -25,6 +25,7 @@ class ReviewTile extends StatelessWidget {
         child: GestureDetector(
           onDoubleTap: () => DatabaseServices(uid: user.uid).likeReview(review),
           child: Card(
+            color: AppColors.grey.withAlpha(255),
             child: Column(
               children: [
                 ListTile(

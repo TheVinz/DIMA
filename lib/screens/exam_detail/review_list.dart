@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:polimi_reviews/models/review.dart';
 import 'package:polimi_reviews/models/review_model.dart';
 import 'package:polimi_reviews/screens/exam_detail/review_tile.dart';
+import 'package:polimi_reviews/screens/exam_detail/reviews_filter.dart';
 
 class ReviewList extends StatelessWidget {
 
@@ -35,12 +36,18 @@ class ReviewList extends StatelessWidget {
         builder: builder
     );
 
-    return  AnimatedList(
-          initialItemCount: model.items.length,
+    return  Column(
+      children: [
+        ReviewsFilter(model),
+        AnimatedList(
+        initialItemCount: model.items.length,
           key: model.listKey,
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
           itemBuilder: (context, index, animation) => ReviewTile(model.items[index], animation),
-        );
+        ),
+      ],
+    );
+
   }
 }
