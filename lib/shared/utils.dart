@@ -74,7 +74,7 @@ final emptyScoreAvatar = CircleAvatar(
 
 final RouteTransitionsBuilder transitionsBuilder = (context, animation, secondaryAnimation, child) {
   return FadeTransition(
-    opacity: animation.drive(Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.fastOutSlowIn))),
+    opacity: animation.drive(Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.ease))),
     child: child,
   );
 };

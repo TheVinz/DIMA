@@ -71,8 +71,12 @@ class _SearchFormState extends State<SearchForm> {
                   if(_formKey.currentState.validate()){
                     Filter filter = Filter(school: _currentSchool, degree: _currentDegree, exam: _currentExam);
                     Navigator.push(context, PageRouteBuilder(
-                      transitionDuration: Duration(milliseconds: 500),
-                      transitionsBuilder: transitionsBuilder,
+                      transitionDuration: Duration(milliseconds: 700),
+                      transitionsBuilder: (context, animation, _, child) =>
+                        SlideTransition(
+                          position: animation.drive(Tween(begin: Offset(0.0, 1.0), end: Offset.zero).chain(CurveTween(curve: Curves.ease))),
+                          child: child,
+                        ),
                       pageBuilder: (context, _, __) => SearchResult(filter: filter,)));
                   }
                 },

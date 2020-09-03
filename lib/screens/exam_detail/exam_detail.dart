@@ -45,14 +45,23 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Future.delayed(transitionDuration, () {
-        _controller.forward();
-        setState(() => scrollable = true);
+        if(this.mounted){
+          _controller.forward();
+          setState(() => scrollable = true);
+        }
       });
     });
 
     DatabaseServices().examStream(exam.path).listen((event) {
       if(this.mounted) setState(() => exam = event);
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
@@ -69,10 +78,13 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
     }
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showSettingsPanel,
-        child: Icon(Icons.comment),
-        backgroundColor: AppColors.lightblue,
+      floatingActionButton: FadeTransition(
+        opacity: _scoreAnimation,
+        child: FloatingActionButton(
+          onPressed: scrollable ? _showSettingsPanel : null,
+          child: Icon(Icons.comment),
+          backgroundColor: AppColors.lightblue,
+        ),
       ),
       body: CustomNestedScrollView(
         physics: scrollable ? ScrollPhysics() : NeverScrollableScrollPhysics(),
