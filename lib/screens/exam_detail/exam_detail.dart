@@ -77,18 +77,20 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
     }
 
     return WillPopScope(
-      onWillPop: () => _scroll
-          .animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.ease)
-          .then((_) async {
-            setState(() {
-              scrollable=false;
-            });
-            await _controller.reverse();
-            Navigator.of(context).pop();
-            return true;
-          })
-      ,
+      onWillPop: () async {
+        setState(() {
+          scrollable=false;
+        });
+        _controller.reverse();
+        return await _scroll
+            .animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.ease)
+            .then((_) async {
+              Navigator.of(context).pop();
+              return true;
+        });
+      },
       child: Scaffold(
+        backgroundColor: Colors.white,
         floatingActionButton: FadeTransition(
           opacity: _scoreAnimation,
           child: FloatingActionButton(

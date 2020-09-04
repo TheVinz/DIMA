@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:polimi_reviews/models/filter.dart';
 import 'package:polimi_reviews/models/review.dart';
 import 'package:polimi_reviews/models/review_model.dart';
@@ -110,7 +111,7 @@ class DatabaseServices {
     Firestore.instance
         .document(examPath)
         .collection('reviews')
-        .orderBy('timestamp')
+        .orderBy('timestamp', descending: false)
         .snapshots()
         .forEach((collection) => collection.documentChanges.forEach((element) {
           switch(element.type){
@@ -206,6 +207,15 @@ class DatabaseServices {
         'likes' : likes,
       });
     });
+  }
+
+  Future<Review> getUserReview(String examPath) async {
+    DocumentSnapshot snapshot = await Firestore.instance
+        .document(examPath)
+        .collection('reviews')
+        .document(uid)
+        .get();
+    return snapshot.data!=null ? _reviewFromSnapshot(snapshot) : null;
   }
 
 }

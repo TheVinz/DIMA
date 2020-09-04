@@ -33,7 +33,7 @@ class ReviewModel {
         case mostLikedFirst:
           return a.likes.compareTo(item.likes) > 0;
         case latestFirst:
-          return a.timestamp.compareTo(item.timestamp) > 0;
+          return item.timestamp.compareTo(a.timestamp) > 0;
           break;
         case ratingAsc:
           return a.score.compareTo(item.score) > 0;

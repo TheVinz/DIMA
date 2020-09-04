@@ -3,6 +3,7 @@ import 'package:polimi_reviews/models/review.dart';
 import 'package:polimi_reviews/models/review_model.dart';
 import 'package:polimi_reviews/screens/exam_detail/review_tile.dart';
 import 'package:polimi_reviews/screens/exam_detail/reviews_filter.dart';
+import 'package:polimi_reviews/shared/constants.dart';
 
 class ReviewList extends StatelessWidget {
 
@@ -17,10 +18,29 @@ class ReviewList extends StatelessWidget {
           )
         ),
         child: Card(
-          child: ListTile(
-            title: Text(review.author),
-            subtitle: Text(review.comment),
-          ),
+          color: AppColors.grey,
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(review.author),
+                subtitle: Text(review.comment),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 15.0),
+                      child: Text('${review.timestamp.year}/${review.timestamp.month}/${review.timestamp.day}',
+                        style: TextStyle(fontSize: 12.0,),
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                  )
+                ],
+              )
+            ],
+          )
         )
       );
     };

@@ -16,7 +16,7 @@ class _SearchFormState extends State<SearchForm> {
   final _formKey = GlobalKey<FormState>();
   String _currentSchool;
   String _currentDegree;
-  String _currentExam;
+  String _currentExam = '';
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class _SearchFormState extends State<SearchForm> {
               ),
               SizedBox(height: 20,),
               RaisedButton(
-                child: Text('Search', style: TextStyle(color: Colors.white),),
+                child: Text(_currentExam.length==0 ? 'Find all' : 'Search', style: TextStyle(color: Colors.white),),
                 onPressed: () {
                   if(_formKey.currentState.validate()){
                     Filter filter = Filter(school: _currentSchool, degree: _currentDegree, exam: _currentExam);

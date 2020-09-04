@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:polimi_reviews/models/review.dart';
+import 'package:polimi_reviews/models/review_model.dart';
 import 'package:polimi_reviews/models/user.dart';
 import 'package:polimi_reviews/services/database.dart';
 import 'package:polimi_reviews/shared/constants.dart';
@@ -24,14 +25,30 @@ class _ReviewFormState extends State<ReviewForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   double score = 2.5;
   String comment = '';
-  bool loading = false;
+  bool loading = true;
+  bool query = true;
 
   @override
   Widget build(BuildContext context) {
-    
+
     final User user = Provider.of<User>(context);
-    
-    return SingleChildScrollView(
+
+    if(query){
+      query = false;
+      DatabaseServices(uid: user.uid).getUserReview(widget.examPath)
+          .then((value) {
+        if(this.mounted)
+          setState(() {
+            if(value!=null) {
+              score = value.score;
+              comment = value.comment;
+            }
+            loading = false;
+          });
+      });
+    }
+
+    return loading ? Loading() : SingleChildScrollView(
       child: Form(
         key: _formKey,
         child: Column(
@@ -64,6 +81,7 @@ class _ReviewFormState extends State<ReviewForm> {
             ),
             SizedBox(height: 10.0,),
             TextFormField(
+              initialValue: comment,
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.sentences,
               minLines: 2,
@@ -79,10 +97,6 @@ class _ReviewFormState extends State<ReviewForm> {
               onChanged: (val) => setState(() => comment=val),
             ),
             SizedBox(height: 20.0,),
-            Visibility(
-              visible: loading,
-              child: Loading(),
-            ),
             RaisedButton(
               child: Text("submit", style: TextStyle(color:Colors.white),),
               onPressed: () {
@@ -91,9 +105,8 @@ class _ReviewFormState extends State<ReviewForm> {
                   DatabaseServices(uid: user.uid)
                       .submitReview(
                       widget.examPath, Review(comment: comment, score: score))
-                      .then((value) {
-                    setState(() => loading = false);
-                    Navigator.pop(context);
+                      .then((_) {
+                        Navigator.pop(context);
                   });
                 }
               })
