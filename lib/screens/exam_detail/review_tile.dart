@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:polimi_reviews/models/review.dart';
@@ -29,30 +30,48 @@ class ReviewTile extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  title: Text(review.author, style: TextStyle(fontWeight: FontWeight.w500, ),),
-                  leading: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 15.0,
-                        backgroundColor: AppColors.lightblue,
-                        child: Image.asset('assets/polimilogo.png',
-                            color: Colors.black),
-                      ),
-                      RatingBarIndicator(
-                          unratedColor: AppColors.lightblue.withAlpha(150),
-                          itemPadding: EdgeInsets.symmetric(horizontal: 0),
-                          itemSize: 10.0,
-                          rating: review.score,
-                          itemCount: 5,
-                          itemBuilder: (_, __) => Icon(Icons.star, color: Colors.yellow[800])),
-                    ],
+                  title: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 15.0,
+                              backgroundColor: AppColors.lightblue,
+                              child: Image.asset('assets/polimilogo.png',
+                                  color: Colors.black),
+                            ),
+                            RatingBarIndicator(
+                                unratedColor: AppColors.lightblue.withAlpha(150),
+                                itemPadding: EdgeInsets.symmetric(horizontal: 0),
+                                itemSize: 10.0,
+                                rating: review.score,
+                                itemCount: 5,
+                                itemBuilder: (_, __) => Icon(Icons.star, color: Colors.yellow[800])),
+                          ],
+                        ),
+                        SizedBox(width: 10.0,),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: review.userId==user.uid ? 112.0 : 152),
+                          child: Text(review.author, style: TextStyle(fontWeight: FontWeight.w500, ), overflow: TextOverflow.visible,)
+                        ),
+                        review.userId==user.uid ? Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: GestureDetector(
+                              onTap: () =>  DatabaseServices().deleteReview(review),
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(Icons.delete, color: AppColors.lightblue)),
+                            ),
+                          ),
+                        ) : Material(),
+                      ],
+                    ),
                   ),
-                  trailing: review.userId==user.uid ? GestureDetector(
-                    onTap: () =>  DatabaseServices().deleteReview(review),
-                    child: Icon(Icons.delete, color: AppColors.lightblue),
-                  ) : null,
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

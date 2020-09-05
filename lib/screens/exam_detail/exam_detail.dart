@@ -125,23 +125,28 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
                       child: Image.asset('assets/polimilogo.png',
                         color: Colors.black,
                       )),
-                  title: Hero(
-                    flightShuttleBuilder: (flightContext, animation, direction, fromHeroContext, toHeroContext, ) {
-                      final Hero toHero = toHeroContext.widget;
-                      final Text widget = toHero.child;
-                      return FadeTransition(
-                        opacity: animation.drive(Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.ease))),
-                        child: Container(
-                          color: AppColors.darkblue.withAlpha(100),
-                          child: Text(widget.data,
-                            style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.w500),)),
-                      );
-                    },
-                    tag: '${exam.path}_name',
-                    child: Text(exam.name,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
+                  title: Padding(
+                    padding: EdgeInsets.only(right: 35.0),
+                    child: Hero(
+                      flightShuttleBuilder: (flightContext, animation, direction, fromHeroContext, toHeroContext, ) {
+                        final Hero toHero = toHeroContext.widget;
+                        final Text widget = toHero.child;
+                        return FadeTransition(
+                          opacity: animation.drive(Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.ease))),
+                          child: Container(
+                            color: AppColors.darkblue.withAlpha(100),
+                            child: Text(widget.data,
+                              style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.w500),)),
+                        );
+                      },
+                      tag: '${exam.path}_name',
+                      child: Text(exam.name,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0
+                        ),
+                        maxLines: innerBoxIsScrolled ? 1 : 5,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
