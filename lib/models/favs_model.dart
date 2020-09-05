@@ -26,7 +26,6 @@ class FavsModel extends ChangeNotifier {
     _listKey.currentState.insertItem(0);
     notifyListeners();
     DatabaseServices(uid: uid).addFavourite(item);
-    _items.forEach((element) {print(element.name);});
   }
 
   Future remove(Exam item, AnimatedListRemovedItemBuilder builder) {

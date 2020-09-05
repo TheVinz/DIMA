@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:polimi_reviews/models/filter.dart';
 import 'package:polimi_reviews/models/review.dart';
 import 'package:polimi_reviews/models/review_model.dart';

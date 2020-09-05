@@ -43,16 +43,10 @@ class FavTile extends StatelessWidget {
                         itemBuilder: (_, __) => Icon(Icons.star, color: exam.numReviews==0 ? AppColors.grey : Colors.yellow[800]))
                   ],
                 ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(exam.cfu.toString()),
-                    Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: Icon(Icons.delete, color: AppColors.lightblue),
-                    )
-                  ],
-                ),
+                trailing: Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Icon(Icons.delete, color: AppColors.lightblue),
+                )
               )
           )
       );
@@ -110,19 +104,13 @@ class FavTile extends StatelessWidget {
                 )
               ],
             ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(exam.cfu.toString()),
-                GestureDetector(
-                  onTap: () => model.remove(exam, _builder(exam)),
-                  child: Padding(
-                    padding: EdgeInsets.all(5.0),
-                    child: Icon(Icons.delete, color: AppColors.lightblue),
-                  ),
-                )
-              ],
-            ),
+            trailing: GestureDetector(
+              onTap: () => model.remove(exam, _builder(exam)),
+              child: Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Icon(Icons.delete, color: AppColors.lightblue),
+              ),
+            )
           ),
         );
       }

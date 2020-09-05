@@ -122,11 +122,21 @@ class _RegisterState extends State<Register> {
                         onPressed: () async{
                           if(_formKey.currentState.validate()){
                             setState(() => loading = true);
-                            dynamic result = await _auth.register(email, password, name);
-                            if(result == null){
+                            dynamic result;
+                            try{
+                              result = await _auth.register(email, password, name);
+                              if(result == null){
+                                setState(() {
+                                  loading = false;
+                                  error = 'Please supply a valid email';
+                                });
+                              }
+                            }
+                            catch(e){
+                              print('prova');
                               setState(() {
                                 loading = false;
-                                error = 'Please supply a valid email';
+                                error = e.toString();
                               });
                             }
                           }
