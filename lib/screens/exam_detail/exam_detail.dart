@@ -57,7 +57,6 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _controller.dispose();
 
     super.dispose();
@@ -201,7 +200,7 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
                                         tag: '${exam.path}_rating',
                                         child: RatingBarIndicator(
                                             unratedColor: AppColors.lightblue.withAlpha(150),
-                                            itemSize: 25.0,
+                                            itemSize: 20.0,
                                           rating: exam.numReviews==0 ? 5 : exam.score,
                                           itemCount: 5,
                                           itemBuilder: (_, __) => Icon(Icons.star, color: exam.numReviews==0 ? AppColors.grey : Colors.yellow[800])),

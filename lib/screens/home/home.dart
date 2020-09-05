@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:polimi_reviews/models/favs_model.dart';
-import 'package:polimi_reviews/models/school.dart';
 import 'package:polimi_reviews/models/user.dart';
 import 'package:polimi_reviews/screens/home/favs_screen/favs_screen.dart';
+import 'package:polimi_reviews/screens/home/offstage_navigator.dart';
 import 'package:polimi_reviews/screens/home/search_screen/search_screen.dart';
-import 'package:polimi_reviews/services/auth.dart';
 import 'package:polimi_reviews/services/database.dart';
 import 'package:polimi_reviews/shared/constants.dart';
 import 'package:polimi_reviews/shared/loading.dart';
-import 'package:polimi_reviews/shared/utils.dart';
 import 'package:provider/provider.dart';
 
 class TabIndexes{
@@ -21,34 +19,21 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   final _navigatorKeys = [
-    GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>()];
 
   List<String> paths;
-  int _currentTab = TabIndexes.search;
+  TabController _tabController;
 
-  Widget _buildOffstageNavigator(int index, Widget screen){
-    return Offstage(
-      child: Navigator(
-        key: _navigatorKeys[index],
-        onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => screen),
-        observers: [HeroController()],
-      ),
-      offstage: _currentTab!=index,
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2, vsync: this
     );
-  }
-
-  void _selectTab(int tabItem) {
-    if (tabItem == _currentTab) {
-      // pop to first route
-      _navigatorKeys[tabItem].currentState.popUntil((route) => route.isFirst);
-    } else {
-      setState(() => _currentTab = tabItem);
-    }
   }
 
   @override
@@ -59,14 +44,15 @@ class _HomeState extends State<Home> {
     if(paths == null)
       DatabaseServices(uid:uid).favourites.then((value) => setState(() => paths = value));
 
-    return paths==null? Container(color: Colors.white, child: Loading()) : WillPopScope(
+    return paths==null? Container(color: Colors.white, child: Loading()) :
+    WillPopScope(
       onWillPop: () async {
-        final isFirstRouteInCurrentTab = !await _navigatorKeys[_currentTab].currentState.maybePop();
+        final isFirstRouteInCurrentTab = !await _navigatorKeys[_tabController.index].currentState.maybePop();
         if (isFirstRouteInCurrentTab) {
           // if not on the 'main' tab
-          if (_currentTab != TabIndexes.search) {
+          if (_tabController.index != TabIndexes.search) {
             // select 'main' tab
-            _selectTab(TabIndexes.search);
+            _tabController.animateTo(TabIndexes.search);
             // back button handled by app
             return false;
           }
@@ -77,30 +63,30 @@ class _HomeState extends State<Home> {
       child: ChangeNotifierProvider<FavsModel>(
         create: (_) => FavsModel(paths, uid:uid),
         child: Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.grey[400],
-            unselectedLabelStyle: TextStyle(fontSize: 10.0),
-            selectedIconTheme: IconThemeData(size: 25.0),
-            unselectedIconTheme: IconThemeData(size: 20.0),
-            backgroundColor: AppColors.darkblue,
-            currentIndex: _currentTab,
-            onTap: (val) => val!=_currentTab ? this.setState(() => _currentTab = val) : null,
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                title: Text('Search')
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite_border),
-                title: Text('Saved')
-              )
-            ]
+          bottomNavigationBar: Container(
+            color: AppColors.darkblue,
+            child: TabBar(
+              controller: _tabController,
+              labelColor: Colors.white,
+              unselectedLabelColor: AppColors.lightblue,
+              indicatorColor: Colors.white,
+              tabs: [
+                Tab (
+                  icon: Icon(Icons.search,),
+                  text: 'Search'
+                ),
+                Tab(
+                  icon: Icon(Icons.favorite_border,),
+                  text: 'Saved'
+                )
+              ]
+            ),
           ),
-          body: Stack(
+          body: TabBarView(
+            controller: _tabController,
             children: [
-              _buildOffstageNavigator(TabIndexes.search, SearchScreen()),
-              _buildOffstageNavigator(TabIndexes.favs, FavsScreen())
+              OffstageNavigator(SearchScreen(), _navigatorKeys[0]),
+              OffstageNavigator(FavsScreen(), _navigatorKeys[1])
             ],
           ),
         ),
