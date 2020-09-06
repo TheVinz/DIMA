@@ -64,9 +64,9 @@ class _ReviewFormState extends State<ReviewForm> {
               ScoreAvatar(radius: 25.0,),
               CircleAvatar(
                 radius: 25.0,
-                backgroundColor: Colors.white.withAlpha(100),
+                backgroundColor: Colors.white.withAlpha(150),
                 child: Text(score.toString(),
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
+                  style: TextStyle(fontSize: 22.0, color: Colors.black, fontWeight: FontWeight.w700),
                 ),
               )
             ],),

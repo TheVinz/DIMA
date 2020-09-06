@@ -187,7 +187,7 @@ class _ExamDetailState extends State<ExamDetail> with SingleTickerProviderStateM
                                                   opacity: _scoreAnimation,
                                                   child: CircleAvatar(
                                                     radius: 30.0,
-                                                    backgroundColor: Colors.white.withAlpha(100),
+                                                    backgroundColor: Colors.white.withAlpha(150),
                                                     child: Text((exam.numReviews==0 ? '' : exam.score.toStringAsFixed(2)),
                                                       style: TextStyle(
                                                         color: Colors.black,
