@@ -31,7 +31,7 @@ class ReviewModel {
     int index = _items.indexWhere((a) {
       switch(_currentFilter){
         case mostLikedFirst:
-          return a.likes.compareTo(item.likes) > 0;
+          return a.likes.compareTo(item.likes) < 0;
         case latestFirst:
           return item.timestamp.compareTo(a.timestamp) > 0;
           break;
@@ -64,9 +64,6 @@ class ReviewModel {
   }
 
   void sort(String filter){
-
-    if(filter==_currentFilter)
-      return;
 
     switch(filter){
       case mostLikedFirst:
